@@ -1,0 +1,12 @@
+Links:
+	https://bitcoin.org/
+	https://github.com/bitcoin/bitcoin
+	
+	https://we.lovebitco.in/
+	https://www.hindawi.com/journals/misy/2018/2159082/
+	
+	https://en.bitcoin.it/wiki/Network
+	
+Learning Sites:
+	https://www.coursera.org/specializations/blockchain
+	https://www.edx.org/learn/blockchain-cryptography

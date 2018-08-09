@@ -1,0 +1,36 @@
+P2P Considerations:
+	- Bitcoin (Hence forth how about XCV ie Causevest Coin) address resolution.
+	- It is prompting for Datagram, P2P can you Stream sockets.
+	- Encryption mechanism? SHA256
+	
+How do bitcoin clients find each other?
+From: https://bitcoin.stackexchange.com/questions/3536/how-do-bitcoin-clients-find-each-other 
+Ans by David Schwartz:
+	Bitcoin clients use several methods to locate other clients. The primary method is a list of nodes from a previous connection to the network. 
+	The works very well for everything but your first connection or a connection after a very long period of disconnection.
+
+	For the case where you have no previous known IPs or they aren't usable, the primary fallback method is by DNS seeds. 
+	Several host names (such as dnsseed.bluematt.me) are maintained that resolve to a list of IP addresses known to be running nodes. 
+	Should that fail, the client has a list of IP addresses believed to point to stable nodes hard-coded into it.
+
+	One method that used to be used, but that has since been abandoned, was having the clients locate each other using an IRC server. 
+	That worked similar to a BitTorrent tracker.
+
+	Once you are connected to the network, you will begin to receive lists of IP addresses and ports of known clients.
+		- Answer by: https://bitcoin.stackexchange.com/users/85/david-schwartz
+		
+Ans by Nick ODell:
+	There's a couple of methods the client can use. However, unlike David's very good answer, I'll talk about them in chronological order:
+
+	The number one way that clients learn about other clients is by connecting to another client and issuing the 'getaddr' command. The standard client has 
+	always had that ability. However, there's a problem with this - how do you learn about client #1?
+	IRC seeding. This is something that's been in since the first version too. It was simple to implement, but ultimately didn't scale. The first version 
+	connected to freenode. Then, bitcoin nodes started getting k-lined. Later versions connected to lfnet. Then, lfnet went down, and IRC support was 
+	removed entirely. DNS was around by this point, so that was fine.
+	IP addresses of well known nodes. This has been in the client since June 2010. Still in the Bitcoin client, though the exact IP addresses change every so 
+	often.
+	DNS seeding. This has been in the client since March 2011. This is easier to scale, because DNS is already built to handle tens of thousands of connections
+		- Answer by: https://bitcoin.stackexchange.com/users/2306/nick-odell
+Links:
+	https://bitcoin.stackexchange.com/questions/3536/how-do-bitcoin-clients-find-each-other
+	https://en.bitcoin.it/wiki/Satoshi_Client_Node_Discovery
