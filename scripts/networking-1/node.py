@@ -39,9 +39,5 @@ class Node:
 		self.tw.join()
 
 if __name__ == '__main__':
-	n1 = Node(17935, ('127.0.0.1', 16642))
-	n2 = Node(19521, ('127.0.0.1', 16642))
-	sleep(100)
-	n1.stop()
-	n2.stop()
-	print('Stopped!')
+	n1 = Node(17935, (sys.argv[1], int(sys.argv[2])))
+	for i in range(100000): sleep(100000)
