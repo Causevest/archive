@@ -1,0 +1,16 @@
+{
+    "peer": {
+        "expiry_time": 20,
+        "limit": 10
+    },
+    "tracker": {
+        "ipaddr": "127.0.0.1",
+        "port": 16642,
+        "idletime": 500000
+    },
+    "localnode": {
+        "ipaddr": "127.0.0.1",
+        "port": 17935,
+        "idletime": 600000
+    }
+}

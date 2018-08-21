@@ -10,3 +10,6 @@ Links:
 Learning Sites:
 	https://www.coursera.org/specializations/blockchain
 	https://www.edx.org/learn/blockchain-cryptography
+
+	https://www.youtube.com/watch?v=8FeAXjkmDcQ&t=937s
+	https://www.youtube.com/watch?v=pQbeBduVQ4I
