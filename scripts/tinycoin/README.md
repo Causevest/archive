@@ -45,6 +45,16 @@ You can set the values of following environment variables according to your need
 
 - `MINER_ADDRESS="ppdpp-dvfgf-fredgdsdf-gdsfgsd-35vr433-ee2eass4d"`
 
+
+# Create local test network
+
+Blockchain is all about distribute network where one connect with different `peers` and exchange data on regular bases.
+During developement, you will probabily not have a group of distributed peers with whome you may want to connect and exchange
+data.
+
+To solve this problem, `testing.sh` script will help you run multiple blockchain instance on different `ports` on the same machine. Open the file `testing.sh` and edit it according to your needs.
+
+
 # API'S
 
 ##### Create a transaction
