@@ -62,7 +62,7 @@ You can set the values of following environment variables according to your need
 - Headers: `Content-Type=application/json`
 - API response `Transaction submission successful` or `Transaction unsuccessful`
 
-##### Start mining
+#### Start mining
 
 - `Method = Get`
 
@@ -70,7 +70,7 @@ You can set the values of following environment variables according to your need
 
 - API response `Mined block in JSON format`
 
-##### Get blocks
+#### Get blocks
 
 - `Method = Get`
 
@@ -78,7 +78,7 @@ You can set the values of following environment variables according to your need
 
 - API response `Blockchain in JSON format`
 
-##### Consensus
+#### Consensus
 
 - `Method = Get`
 
@@ -86,7 +86,7 @@ You can set the values of following environment variables according to your need
 
 - API response `Consensus successfully done`
 
-##### Get peers of a node
+#### Get peers of a node
 
 - `Method = Get`
 
@@ -94,7 +94,7 @@ You can set the values of following environment variables according to your need
 
 - API response `["http://127.0.0.1:5001", "http://127.0.0.1:5002"]`
 
-##### Connect to all peers of peers
+#### Connect to all peers of peers
 
 - `Method = Get`
 
