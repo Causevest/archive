@@ -13,7 +13,7 @@ If you are running other python versions, this project can be ported to other py
 
 - `cd tinycoin`
 
-- `pip install -r requirements.txt` or `pip install -r requirements.txt` based on your `pip` version
+- `pip install -r requirement.txt` or `pip install -r requirement.txt` based on your `pip` version
 
 
 #### '.*NIX' based systems
