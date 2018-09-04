@@ -34,12 +34,44 @@ mining = True
 # Mock the rest request
 mock = False
 
+@node.route("/get_miner_address", methods=['GET'])
+def get_miner_address():
+    """
+        Returns miner address
+    """
+    return miner_address
+
+@node.route("/update_miner_address", methods=['POST'])
+def update_miner_address():
+    """
+        Update miner address
+    """
+    address = request.get_json()['miner_address']
+    if(not address):
+        return "Can not update miner_address as valid miner address is not found"
+    else:
+        global miner_address
+        miner_address = address
+        return "Successfully updated miner address"
+
 @node.route("/peers", methods=['GET'])
 def peer():
     """
         Returns peers of this node
     """
-    return json.dumps(list(peer_nodes))
+    return json.dumps(list(peer_nodes)) 
+
+@node.route("/add_peers", methods=['POST'])
+def add_peers():
+    """
+        Add peers to this node
+    """
+    peers = json.loads(request.data)
+    if(peers):
+        peer_nodes.update(peers)
+        return "Peer list updated"
+    else:
+        return "Failed while adding peer/peers. Error[empty peer list received]"
 
 @node.route("/connect_to_peers_of_peers", methods=['GET'])
 def connect_to_peers_of_peers():
@@ -172,6 +204,6 @@ if __name__ == "__main__":
     peers = os.getenv("PEERS", None)
     if(peers):
         peer_nodes.update(peers.split(","))
-    host = os.getenv("HOST", "http://127.0.0.1")
+    host = os.getenv("HOST", "127.0.0.1")
     port = int(os.getenv("PORT", 5000))
     node.run(host = host, port = port)
