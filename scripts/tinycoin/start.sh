@@ -11,7 +11,7 @@ HOST="0.0.0.0"
 PORT=5000
 
 # Please specify http as peer connection protocol 
-PEERS="http://127.0.0.1:5001" 
+PEERS="localhost:5000" 
 
 # MINER_ADDRESS should be unique per node
 MINER_ADDRESS="ppdpp-dvfgf-fredgdsdf-gdsfgsd-35vr433-ee2eass4d"

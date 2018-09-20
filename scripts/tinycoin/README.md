@@ -4,7 +4,7 @@ This project is created to learn blockchain by creating a small blockchain and i
 
 # Current stable version 
 
-- `v1.5`
+![Alt stable version](https://img.shields.io/badge/release--1.6-ok-green.svg)
 
 To find the latest version please go to the `VERSION` file present at project's base directory 
 
@@ -20,15 +20,15 @@ If you are running other python versions, this project can be ported to other py
 
 - Pull the docker image: 
 
-`sudo docker pull prakashpandey/tinycoin:1.5`
+`sudo docker pull prakashpandey/tinycoin:1.6`
 
 - Run the docker image: 
 
-`sudo docker run -p 5000:5000 -d prakashpandey/tinycoin:1.5`
+`sudo docker run -p 5000:5000 -d prakashpandey/tinycoin:1.6`
 
 That's it. You have successfully installed the `tinycoin` docker image.
 
-Note: Instead of version `1.5` you can also use version `latest` but it may not be stable one.
+Note: Instead of version `1.6` you can also use version `latest` but it may not be stable one.
       To find the latest version please go to the `VERSION` file present at project's base directory
 
 ### 2. I am a hacker, I will setup from scratch
@@ -118,7 +118,25 @@ To solve this problem, `testing.sh` script will help you run multiple blockchain
 - Headers: `Content-Type=application/json`
 - API response `Successfully updated miner address` or `Can not update miner_address as valid miner address is not found`
 
-#### 3. Add peers
+#### 3. Append peers
+
+ Append peers to existing `peer list`
+
+- `Method = Post`
+- `Url = 127.0.0.1:5000/append_peers`
+- Body 
+    ```
+        [
+            "http://192.168.1.11:5000",
+            "http://192.168.1.12:5000"
+        ]
+    ```
+- Headers: `Content-Type=application/json`
+- API response `Peer list updated` or `Failed while adding peer/peers. Error[empty peer list received]`
+
+#### 4. Add peers
+
+ Override the existing peers list with new `given peers` list.
 
 - `Method = Post`
 - `Url = 127.0.0.1:5000/add_peers`
@@ -132,7 +150,7 @@ To solve this problem, `testing.sh` script will help you run multiple blockchain
 - Headers: `Content-Type=application/json`
 - API response `Peer list updated` or `Failed while adding peer/peers. Error[empty peer list received]`
 
-#### 4. Create a transaction
+#### 5. Create a transaction
 
 - `Method = Post`
 - `Url = 127.0.0.1:5000/transaction`
@@ -147,7 +165,7 @@ To solve this problem, `testing.sh` script will help you run multiple blockchain
 - Headers: `Content-Type=application/json`
 - API response `Transaction submission successful` or `Transaction unsuccessful`
 
-##### 5. Start mining
+##### 6. Start mining
 
 - `Method = Get`
 
@@ -155,7 +173,7 @@ To solve this problem, `testing.sh` script will help you run multiple blockchain
 
 - API response `Mined block in JSON format`
 
-#### 6. Get blocks
+#### 7. Get blocks
 
 - `Method = Get`
 
@@ -163,7 +181,7 @@ To solve this problem, `testing.sh` script will help you run multiple blockchain
 
 - API response `Blockchain in JSON format`
 
-#### 7. Consensus
+#### 8. Consensus
 
 - `Method = Get`
 
@@ -171,7 +189,7 @@ To solve this problem, `testing.sh` script will help you run multiple blockchain
 
 - API response `Consensus successfully done`
 
-##### 8. Get peers of a node
+##### 9. Get peers of a node
 
 - `Method = Get`
 
@@ -179,7 +197,7 @@ To solve this problem, `testing.sh` script will help you run multiple blockchain
 
 - API response `["http://127.0.0.1:5001", "http://127.0.0.1:5002"]`
 
-#### 9. Connect to all peers of peers
+#### 10. Connect to all peers of peers
 
 - `Method = Get`
 
@@ -206,3 +224,4 @@ Currently the consensus and proof of work algorithms are very simple. There is s
 
 # Resource
 This learning project is created just for learning and based on open blog articles on internet.
+

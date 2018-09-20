@@ -64,7 +64,21 @@ def peer():
 @node.route("/add_peers", methods=['POST'])
 def add_peers():
     """
-        Add peers to this node
+        Override the existing peers list with new `given peers` list
+    """
+    peers = json.loads(request.data)
+    if(peers):
+        # clear the peer list
+        peer_nodes.clear()
+        peer_nodes.update(peers)
+        return "Peer list updated"
+    else:
+        return "Failed while adding peer/peers. Error[empty peer list received]"
+
+@node.route("/append_peers", methods=['POST'])
+def append_peers():
+    """
+        Append peers to this node
     """
     peers = json.loads(request.data)
     if(peers):
