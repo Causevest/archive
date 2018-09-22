@@ -48,7 +48,7 @@ def update_miner_address():
         Update miner address
     """
     address = request.get_json()['miner_address']
-    if(not address):
+    if not address:
         return "Can not update miner_address as valid miner address is not found"
     else:
         global miner_address
@@ -70,7 +70,7 @@ def add_peers():
         Override the existing peers list with new `given peers` list
     """
     peers = json.loads(request.data)
-    if(peers):
+    if peers:
         # clear the peer list
         peer_nodes.clear()
         peer_nodes.update(peers)
@@ -85,7 +85,7 @@ def append_peers():
         Append peers to this node
     """
     peers = json.loads(request.data)
-    if(peers):
+    if peers:
         peer_nodes.update(peers)
         return "Peer list updated"
     else:
@@ -130,7 +130,7 @@ def transaction():
     print(f"From: { transaction_received['to'] }")
     print(f"Amount: { transaction_received['amount'] }\n")
     
-    if(transaction.is_valid()):
+    if transaction.is_valid():
         nodes_transactions.append(transaction.to_json())
         return "Transaction submission successful\n"
     else:
@@ -172,7 +172,7 @@ def consensus():
     # Find the longest chain in other chain
     longest_chain = find_longest_sub_list(other_chains)
     global blockchain
-    if(len(longest_chain) > len(blockchain)):
+    if len(longest_chain) > len(blockchain):
         blockchain = longest_chain
     
     return "Consensus successfully done"
@@ -223,13 +223,13 @@ def mine():
 if __name__ == "__main__":
     print("Tinycoin server started ...!\n")
     miner_address = os.getenv("MINER_ADDRESS", None)
-    if(not miner_address):
+    if not miner_address:
         print("Can not start application as valid miner address is not found")
         # exit the system with error
         exit(1)
     peers = os.getenv("PEERS", None)
-    if(peers):
+    if peers:
         peer_nodes.update(peers.split(","))
     host = os.getenv("HOST", "127.0.0.1")
     port = int(os.getenv("PORT", 5000))
-    node.run(host = host, port = port)
+    node.run(host=host, port=port)
