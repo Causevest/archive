@@ -1,23 +1,22 @@
 # Application main file
 
+import os
+import json
+import requests
 import datetime as date
-import genesis
-import block
-from block import Block, Data
-from generator import BlockGenerator
-from transaction import Transaction
 from flask import Flask
 from flask import request
-import requests
 
-import json
-import utils
-import os
+from .utils import *
+from .transaction import Transaction
+from .genesis import create_genesis_block
+from .block import Block, Data, get_block_obj
+
 
 node = Flask(__name__)
 
 # Create a blockchain and initialize it with a genesis block
-blockchain = [genesis.create_genesis_block()]
+blockchain = [create_genesis_block()]
 previous_block = blockchain[0]
 
 # A completely random address of the owner of this node
@@ -34,12 +33,14 @@ mining = True
 # Mock the rest request
 mock = False
 
+
 @node.route("/get_miner_address", methods=['GET'])
 def get_miner_address():
     """
         Returns miner address
     """
     return miner_address
+
 
 @node.route("/update_miner_address", methods=['POST'])
 def update_miner_address():
@@ -54,12 +55,14 @@ def update_miner_address():
         miner_address = address
         return "Successfully updated miner address"
 
+
 @node.route("/peers", methods=['GET'])
 def peer():
     """
         Returns peers of this node
     """
     return json.dumps(list(peer_nodes)) 
+
 
 @node.route("/add_peers", methods=['POST'])
 def add_peers():
@@ -75,6 +78,7 @@ def add_peers():
     else:
         return "Failed while adding peer/peers. Error[empty peer list received]"
 
+
 @node.route("/append_peers", methods=['POST'])
 def append_peers():
     """
@@ -86,6 +90,7 @@ def append_peers():
         return "Peer list updated"
     else:
         return "Failed while adding peer/peers. Error[empty peer list received]"
+
 
 @node.route("/connect_to_peers_of_peers", methods=['GET'])
 def connect_to_peers_of_peers():
@@ -107,6 +112,7 @@ def connect_to_peers_of_peers():
     # update the current peers list
     peer_nodes.update(peers)
     return json.dumps(list(peer_nodes))
+
 
 @node.route("/transaction", methods=['POST'])
 def transaction():
@@ -130,9 +136,11 @@ def transaction():
     else:
         return "Invalid transaction\n"
 
+
 @node.route("/blocks", methods=['GET'])
 def get_blocks():
     return json.dumps(blockchain)
+
 
 def find_new_chains():
     other_chains = []
@@ -150,6 +158,7 @@ def find_new_chains():
         other_chains.append(chain)
     return other_chains
 
+
 @node.route("/consensus", methods=['GET'])
 def consensus():
     """
@@ -161,12 +170,13 @@ def consensus():
     other_chains = find_new_chains()
     
     # Find the longest chain in other chain
-    longest_chain = utils.find_longest_sub_list(other_chains)
+    longest_chain = find_longest_sub_list(other_chains)
     global blockchain
     if(len(longest_chain) > len(blockchain)):
         blockchain = longest_chain
     
     return "Consensus successfully done"
+
 
 def proof_of_work(last_proof):
     """
@@ -178,13 +188,14 @@ def proof_of_work(last_proof):
     # Broadcast this number as proof that we have successfully performed proof of work
     return incrementor
 
+
 @node.route("/mine", methods=['GET'])
 def mine():
     # Return if no transaction is available to mine
     if not nodes_transactions:
         return "Transaction is empty, noting to mine."
     
-    last_block = block.get_block_obj(blockchain[len(blockchain) - 1])
+    last_block = get_block_obj(blockchain[len(blockchain) - 1])
     last_proof = json.loads(last_block.data)['proof_of_work']
 
     # Find proof of work for the current block being mined
@@ -198,7 +209,7 @@ def mine():
     new_block_data = Data(proof, nodes_transactions).create()
     new_block_index = last_block.index + 1
     last_block_hash = last_block.hash
-    new_block_timestamp = utils.get_string_datetime(date.datetime.now())
+    new_block_timestamp = get_string_datetime(date.datetime.now())
 
     # Empty the current transaction as it is already processed
     nodes_transactions[:] = []
@@ -207,7 +218,8 @@ def mine():
     blockchain.append(mined_block.to_json())
     # Broadcast to the world that we have mined
     return mined_block.to_json() + "\n"
-    
+   
+
 if __name__ == "__main__":
     print("Tinycoin server started ...!\n")
     miner_address = os.getenv("MINER_ADDRESS", None)
