@@ -17,7 +17,7 @@ def generate_genesis_block():
     blockchain.add_block(b)
 
 def print_blockchain():
-    print("Blockchain: {}\n".format(str(blockchain)))
+    print("Blockchain: \n{}\n".format(str(blockchain)))
 
 if __name__ == "__main__":
     print("NXT style POS implementation in python.\n")
@@ -28,18 +28,20 @@ if __name__ == "__main__":
     # wallet-2
     n = Node("node-2", 10)
     nodes.add(n)
-    print("nodes in the system: {}\n".format(str(nodes)))
+    print("nodes in the system: \n{}\n".format(str(nodes)))
     generate_genesis_block()
     print_blockchain()
     pos = POS(nodes = nodes, blockchain = blockchain)
     iteration = 0
+    print("-------------------------------------------------------------------------------------------------------------\n")
+    print("-------------------------------------------------------------------------------------------------------------\n")
     while(True):
-        print("Iteration {}".format(iteration))
+        print("[Iteration {}]".format(iteration))
         pos.generate_block()
         pos.select_node()
-        time.sleep(10)
+        time.sleep(4)
         iteration += 1
-        print("-----------------------------------------------------------\n")
+        print("-------------------------------------------------------------------------------------------------------------\n")
 	
         
 

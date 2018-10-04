@@ -7,6 +7,16 @@ import json
 from random import randint
 import utils
 
+
+class Lottery(object):
+
+	def __init__(self, node, block):
+		self.node = node
+		self.block = block
+	
+	def __str__(self):
+		return "lottery"
+
 class Lotteries(object):
 
 	def __init__(self):
@@ -17,15 +27,6 @@ class Lotteries(object):
 	
 	def __str__(self):
 		return "lotteries"
-
-class Lottery(object):
-
-	def __init__(self, node, block):
-		self.node = node
-		self.block = block
-	
-	def __str__(self):
-		return "lottery"
 
 class POS(object):
 	
@@ -43,7 +44,7 @@ class POS(object):
 		return json.dumps(self.wallets)
 	
 	def generate_block(self):
-		print("---------------- Generating blocks -----------------")
+		print("__INIT__[Generating blocks]")
 		# randomly select a node
 		node = self.nodes.nodes[utils.rand_number_between(0, len(self.nodes.nodes) - 1)]
 		block = Block(index = self.index, prev_hash = self.prev_block.hash, validator = node.address)
@@ -51,7 +52,7 @@ class POS(object):
 		self.candidate_blocks.append(block)
 
 	def select_node(self):
-		print("---------------- selecting blocks from candidate blocks -----------------")
+		print("selecting block from candidate blocks....")
 		# select one block from candidate blocks
 		lotteries = Lotteries()
 		for block in self.candidate_blocks:
@@ -69,7 +70,7 @@ class POS(object):
 		# add this block to blockchain
 		self.blockchain.add_block(block_won)
 		self.prev_block = block_won
-		print("Adding block to blockchain [{}]".format(str(block_won)))
+		print("[Adding block to blockchain] \n[{}]".format(str(block_won)))
 		# clear candidate blocks list
 		del self.candidate_blocks[:]
 
