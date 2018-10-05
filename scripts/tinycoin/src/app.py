@@ -6,14 +6,18 @@ import requests
 import datetime as date
 from flask import Flask
 from flask import request
+from flask_cors import CORS
+import requests
 
-from .utils import *
-from .transaction import Transaction
-from .genesis import create_genesis_block
-from .block import Block, Data, get_block_obj
+from utils import *
+from transaction import Transaction
+from genesis import create_genesis_block
+from block import Block, Data, get_block_obj
 
+from pathlib import Path
 
 node = Flask(__name__)
+CORS(node)
 
 # Create a blockchain and initialize it with a genesis block
 blockchain = [create_genesis_block()]
@@ -21,6 +25,12 @@ previous_block = blockchain[0]
 
 # A completely random address of the owner of this node
 miner_address = None
+
+# Version 1.7 changes
+# Just in case
+default_ip = "0.0.0.0" # Works in all cases whether from docker or command window etc.
+default_port = 5000
+default_miner = "default_miner_address"
 
 # Transactions that this node is doing
 nodes_transactions = []
@@ -106,7 +116,7 @@ def connect_to_peers_of_peers():
         except Exception as e:
             print(f"__ERROR__ while trying to find peers of a peer. { str(e) }")
     # remove the self node
-    this_node = os.getenv("HOST", "127.0.0.1") + ":" + os.getenv("PORT", 5000)
+    this_node = os.getenv("HOST", default_ip) + ":" + os.getenv("PORT", default_port)
     while this_node in peers:
         peers.remove(this_node)
     # update the current peers list
@@ -121,14 +131,19 @@ def transaction():
     transaction = Transaction(
         transaction_received['from'], 
         transaction_received['to'], 
-        transaction_received['amount']
+        transaction_received['amount'],
+        transaction_received['timestamp'],
+        transaction_received['txnid'],
+        transaction_received['signature']
     )
     
     # print transaction logs
     print("New Transaction")
     print(f"From: { transaction_received['from'] }")
-    print(f"From: { transaction_received['to'] }")
-    print(f"Amount: { transaction_received['amount'] }\n")
+    print(f"To: { transaction_received['to'] }")
+    print(f"Amount: { transaction_received['amount'] }")
+    print(f"timestamp: { transaction_received['timestamp'] }")
+    print(f"TxnId: { transaction_received['txnid'] }\n")
     
     if transaction.is_valid():
         nodes_transactions.append(transaction.to_json())
@@ -218,11 +233,31 @@ def mine():
     blockchain.append(mined_block.to_json())
     # Broadcast to the world that we have mined
     return mined_block.to_json() + "\n"
-   
+
+
+@node.route("/version", methods=['GET'])
+def version():
+    currdir = os.path.dirname(__file__)
+    versonFile = os.path.join(currdir, '../VERSION')
+    version = "default"
+    file = Path(versonFile)
+    if not file.exists():
+        print("'%s' doesn't exists." % versonFile)
+        return version
+
+    with file.open("r") as fd:
+        for line in fd:
+            line.strip()
+            if len(line) == 0:
+                continue
+            version = line
+            break
+    return version
+
 
 if __name__ == "__main__":
     print("Tinycoin server started ...!\n")
-    miner_address = os.getenv("MINER_ADDRESS", None)
+    miner_address = os.getenv("MINER_ADDRESS", default_miner)
     if not miner_address:
         print("Can not start application as valid miner address is not found")
         # exit the system with error
@@ -230,6 +265,10 @@ if __name__ == "__main__":
     peers = os.getenv("PEERS", None)
     if peers:
         peer_nodes.update(peers.split(","))
-    host = os.getenv("HOST", "127.0.0.1")
-    port = int(os.getenv("PORT", 5000))
-    node.run(host=host, port=port)
+    host = os.getenv("HOST", default_ip)
+    port = int(os.getenv("PORT", default_port))
+    print("Using the following info to run the Tinycoin server ...")
+    print("\t Host:", host)
+    print("\t Port:", port)
+    print("\tMiner:", miner_address)
+    node.run(host = str(host), port = int(port))

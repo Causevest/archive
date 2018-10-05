@@ -150,7 +150,11 @@ To solve this problem, `testing.sh` script will help you run multiple blockchain
 - Headers: `Content-Type=application/json`
 - API response `Peer list updated` or `Failed while adding peer/peers. Error[empty peer list received]`
 
+
 #### 5. Create a transaction
+#### New JSON fields added timestamp 		- timestamp
+####                       transaction id 	- txnid 
+####                       signature      	- signature - Signature to be generated
 
 - `Method = Post`
 - `Url = 127.0.0.1:5000/transaction`
@@ -159,7 +163,10 @@ To solve this problem, `testing.sh` script will help you run multiple blockchain
         {
             "from": "71238uqirbfh894-random-public-key-a-alkjdflakjfewn204ij",
             "to": "ppdpp-dvfgf-fredgdsdf-gdsfgsd-35vr433-ee2eass4d",
-            "amount": 2
+            "amount": 2,
+			"timestamp": system date
+			"txnid": "${miner-address}-XCV${number}",
+			"signature": coming soon
         }
     ```
 - Headers: `Content-Type=application/json`
@@ -204,6 +211,15 @@ To solve this problem, `testing.sh` script will help you run multiple blockchain
 - `Url = localhost:5000/connect_to_peers_of_peers`
 
 - API response `["http://127.0.0.1:5002", "http://127.0.0.1:5000"]`
+
+#### Version 1.7 New API added
+#### 11. Connect to all peers of peers
+
+- `Method = Get`
+
+- `Url = localhost:5000/version`
+
+- API response `<ver>` or 'default' if VERSION file not found
 
 # What more can be done?
 

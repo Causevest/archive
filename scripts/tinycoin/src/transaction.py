@@ -9,23 +9,33 @@ class Transaction(object):
         {
             "from": "71238uqirbfh894-random-public-key-a-alkjdflakjfewn204ij",
             "to": "93j4ivnqiopvh43-random-public-key-b-qjrgvnoeirbnferinfo",
-            "amount": 3
+            "amount": 3,
+            "timestamp": "...",
+            "txnid": "miner-address-XCV-9999",
+            "signature": "TODO"
         }
     """
-    def __init__(self, _from_, to, amount):
+    def __init__(self, _from_, to, amount, timestamp, txnid, signature):
         self._from_ = _from_.strip()
         self.to = to.strip()
         self.amount = amount
-        if(isinstance(amount, int)):
+        if(isinstance(amount, int) or isinstance(amount, float)):
             self.amount = amount
         else:
              self.amount = 0
+        # Version 1.7 changes
+        self.timestamp = timestamp.strip()
+        self.txnid = txnid.strip()
+        self.signature = signature.strip()
     
     def to_json(self):
         transaction = {
             "from": self._from_,
             "to": self.to,
-            "amount": self.amount
+            "amount": self.amount,
+            "timestamp": self.timestamp,
+            "txnid": self.txnid,
+            "signature": self.signature
         }
         return json.dumps(transaction)
     
@@ -39,6 +49,3 @@ class Transaction(object):
             return False
         return True
 
-
-
-   
