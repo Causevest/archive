@@ -53,7 +53,8 @@
 	<div id="peers-division" class="tabcontent">
 		<div id="peer-list">
 			<label for="peers">Peers</label>
-			<textarea id="peers" cols="40" name="peers" rows="5"></textarea>
+			<textarea id="peers" cols="40" name="peers" rows="5"></textarea><br/>
+			<button id="alignpeers" class="btn" onclick="alignPeers(event)">Peers</button>
 		</div>
 		<div id="peer-input-list">
 			<label for="peerinput">New Peers</label>
@@ -65,8 +66,6 @@
 			<button id="addpeers" class="btn" onclick="addPeers(event)">Add Peers</button><br/>
 			<div class="gap0"></div>
 			<button id="apppeers" class="btn" onclick="appPeers(event)">Append Peers</button><br/>
-			<div class="gap0"></div>
-			<button id="connect" class="btn" onclick="connect(event)">Connect to peers of peers</button>
 			<div class="gap0"></div>
 			<button id="detectpeers" class="btn" onclick="detectPeers(event)">Detect Peers</button><br/>
 		</div>

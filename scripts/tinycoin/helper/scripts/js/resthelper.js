@@ -18,18 +18,18 @@ RqRsDataType = {
 
 TinycoinAPI = 
 {
-	//API, [API Name, REST method, content-type]
-	"version": ["version", "get", "text"],
-	"get_miner_address": ["get_miner_address", "get", "text"],
-	"update_miner_address": ["update_miner_address", "post", "json"],
-	"add_peers": ["add_peers", "post", "json"],
-	"append_peers": ["append_peers", "post", "json"],
-	"transaction": ["transaction", "post", "json"],
-	"peers": ["peers", "get", "text"],
-	"mine": ["mine", "get", "text"],
-	"blocks": ["blocks", "get", "text"],
-	"consensus": ["consensus", "get", "text"],
-	"connect_to_peers_of_peers": ["connect_to_peers_of_peers", "get", "text"],
+	//API, [API Name, REST method, content-type, html id, next-operation]
+	"version": ["version", "get", "text", "version", ""],
+	"get_miner_address": ["get_miner_address", "get", "text", "miner", ""],
+	"update_miner_address": ["update_miner_address", "post", "json", "miner", "get_miner_address"],
+	"add_peers": ["add_peers", "post", "json", "peers", "connect_to_peers_of_peers"],
+	"append_peers": ["append_peers", "post", "json", "peers", "connect_to_peers_of_peers"],
+	"connect_to_peers_of_peers": ["connect_to_peers_of_peers", "get", "text", "peers", ""],
+	"transaction": ["transaction", "post", "json", "", ""],
+	"peers": ["peers", "get", "text", "peers", ""],
+	"mine": ["mine", "get", "text", "", ""],
+	"blocks": ["blocks", "get", "text", "", ""],
+	"consensus": ["consensus", "get", "text", "", ""],
 }
 
 function makePostRq(url,headers,data) {
@@ -77,15 +77,17 @@ function makeUrl(api) {
 	return u;
 }
 
-function processRq(rq,id) {
-	var results = document.getElementById("results");
+function processRq(rq,id,nxtopn) {
+	
 	try {
 		fetch(rq)
 		.then(function(rs) {
 			var type;
+
 			console.debug(rs);
 			console.debug(rs.headers);
 			console.debug(rs.headers.has("Content-Type"));
+
 			if(rs.headers.has("Content-Type")){
 				var conttp = rs.headers.get("Content-Type")
 				if(conttp.indexOf("text/html")>=0) {
@@ -113,32 +115,40 @@ function processRq(rq,id) {
 			}
 		})
 		.catch(function(err){ 
-			results.value = "Error occured: "+err;
+			results.value = makeResString("Error occured: "+err);
 			results.style.color = 'red';
 			results.style.font = '1em bold';
 		})
 		.then(function(rsp) {
 			id.value = rsp;
-			results.value = rsp;
+			results.value = makeResString(rsp);
 			results.style.color = 'green';
 			results.style.font = '1em bold';
+			if(nxtopn != '') {
+				console.debug(nxtopn)
+				perform(nxtopn,'')
+			}
 		})
 	}
 	catch(error) {
-		results.value = "Error: "+error;
+		results.value = makeResString("Error: "+error);
 		results.style.color = 'red';
 		results.style.font = '1em bold';
 	}
 }
 
-function perform(api, id, data) {
-	console.debug("perform")
+function perform(api, data) {
+	console.debug("perform");
+
 	var rq;
+
 	var apiinfo = TinycoinAPI[api];
 	var apiname = apiinfo[0];
 	var method = apiinfo[1];
 	var type = apiinfo[2];
-	
+	var id = apiinfo[3];
+	var nxtopn = apiinfo[4];
+
 	var url = makeUrl(apiname);
 	console.debug("URL:"+url);
 
@@ -160,5 +170,6 @@ function perform(api, id, data) {
 		}
 		break;
 	}
-	processRq(rq,id)
+	var docid = document.getElementById(id);
+	processRq(rq, docid, nxtopn)
 }

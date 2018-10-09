@@ -1,3 +1,5 @@
+
+/* Remove white spaces and commas from peer input text area */
 function peerList(data) {
 	var data = data.split(/[,\s]/)
 	var moddata = []
@@ -6,9 +8,22 @@ function peerList(data) {
 			moddata.push(data[i]);
 		}
 	}
-	console.debug(moddata)
-	console.debug(JSON.stringify(moddata))
 	return JSON.stringify(moddata)
+}
+
+/* Remove spaces, commas, double quotes, single quotes, braces etc from peers text area */
+function beautifyPeers(data) {
+	data = data.replace('[','');
+	data = data.replace(']','');
+	var dat = data.split(/[,\s\q]/)
+	var moddata = ''
+	for(var i=0; i<dat.length;i++) {
+		if(dat[i].length > 0){
+			dat[i] = dat[i].replace('\q','');
+			moddata = moddata+dat[i]+"\n"
+		}
+	}
+	return moddata;
 }
 
 function generateTxnid(mineraddr, lasttxnid) {
@@ -30,4 +45,14 @@ function generateTimeStamp() {
 
 function generateTxnSignature(mineraddr) {
 	return "Under research ...";
+}
+
+function makeResString(strval) {
+	var results = document.getElementById("results").value.trim();
+	var resstr = ''; 
+	if(results.length > 0) {
+		resstr = results + "\n";
+	}
+	resstr = resstr + strval;
+	return (resstr);
 }

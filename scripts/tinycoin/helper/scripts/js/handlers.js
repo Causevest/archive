@@ -31,8 +31,8 @@ function getVersion(evt) {
 	console.debug("Get tinycoin version");
 	resetActiveClass(evt);
 
-	var id = document.getElementById("version");
-	perform("version", id)
+	eraseResults();
+	perform("version", '')
 }
 
 /* Miner Address Handling */
@@ -43,7 +43,9 @@ function getMiner(evt) {
 
 	var id = document.getElementById("miner");
 	console.debug("Displayed Miner Address: "+id.value);
-	perform("get_miner_address", id)
+
+	eraseResults();
+	perform("get_miner_address", '')
 }
 
 function updateMiner(evt) {
@@ -53,57 +55,72 @@ function updateMiner(evt) {
 	var id = document.getElementById("miner");
 	console.debug("Displayed Miner Address: "+id.value);
 
+	var options = {};
 	var data = {}
 	data['miner_address'] = id.value;
-	perform("update_miner_address", id, JSON.stringify(data))
+
+	eraseResults();
+	perform("update_miner_address", JSON.stringify(data))
 }
 
 /* Peers Handling */
+function alignPeers(evt) {
+	console.debug("Beautify peers");
+	resetActiveClass(evt);
+	var peers = document.getElementById("peers")
+	if(peers.value.length <= 0)
+		return;
+	var peerlst = beautifyPeers(peers.value);
+	peers.value = peerlst;
+}
+
 function getPeers(evt) {
 	console.debug("Get peers");
 	resetActiveClass(evt);
 
-	var id = document.getElementById("peers")
-	perform("peers", id)
+	eraseResults();
+	perform("peers", '')
 }
 
 function addPeers(evt) {
 	console.debug("Add peers");
 	resetActiveClass(evt);
 
-	var results = document.getElementById("results")
-	var peers = document.getElementById("peers")
 	var input = document.getElementById("peerinput")
-	var peerlist = input.value;
+	var peerlst = input.value;
 
-	var data = peerList(peerlist)
-	perform("add_peers", results, data)
+	var data = peerList(peerlst)
+
+	eraseResults();
+	perform("add_peers", data)
 }
 
 function appPeers(evt) {
 	console.debug("Append peers")
 	resetActiveClass(evt);
 
-	var results = document.getElementById("results")
-	var peers = document.getElementById("peers")
 	var input = document.getElementById("peerinput")
-	var peerlist = input.value;
+	var peerlst = input.value;
 
-	var data = peerList(peerlist);
-	perform("append_peers", results, data)
+	var data = peerList(peerlst);
+	eraseResults();	
+	perform("append_peers", data)
 }
 
 function detectPeers(evt) {
 	console.debug("Detect peers");
 	resetActiveClass(evt);
 
-	var peers = document.getElementById("peers")
-	var input = document.getElementById("peerinput")
-	var data = {}
-	var results = document.getElementById("results")
-	results.value = "Work in progress !!!"
-	results.style.color = "grey"
-	results.style.font = "bold"
+	eraseResults();
+	perform("connect_to_peers_of_peers", '')
+}
+
+function connect(evt) {
+	console.debug("Perform connect");
+	resetActiveClass(evt);
+
+	eraseResults();
+	perform("connect_to_peers_of_peers", '')
 }
 
 /* Transaction */
@@ -127,7 +144,8 @@ function transaction(evt) {
 	data['txnid'] = generateTxnid(mineraddr, currtxnid);
 	data['signature'] = generateTxnSignature(mineraddr);
 
-	perform("transaction", results, JSON.stringify(data))
+	eraseResults();
+	perform("transaction", JSON.stringify(data))
 }
 
 /* Other operations */
@@ -135,39 +153,33 @@ function mine(evt) {
 	console.debug("Perform mine");
 	resetActiveClass(evt);
 
-	var results = document.getElementById("results")
-	perform("mine", results)
+	eraseResults();
+	perform("mine", '')
 }
 
 function consensus(evt) {
 	console.debug("Perform consensus");
 	resetActiveClass(evt);
 
-	var results = document.getElementById("results")
-	perform("consensus", results)
+	eraseResults();
+	perform("consensus", '')
 }
 
 function blocks(evt) {
 	console.debug("Perform blocks");
 	resetActiveClass(evt);
 
-	var results = document.getElementById("results")
-	perform("blocks", results)
-}
-
-function connect(evt) {
-	console.debug("Perform connect");
-	resetActiveClass(evt);
-
-	var results = document.getElementById("results")
-	perform("connect_to_peers_of_peers", results)
+	eraseResults();
+	perform("blocks", '')
 }
 
 /* Results */
 function clearResults(evt) {
 	console.debug("Clear the results");
 	resetActiveClass(evt);
-
+	eraseResults();
+}
+function eraseResults() {
 	var results = document.getElementById("results");
 	results.value = "";
 }
