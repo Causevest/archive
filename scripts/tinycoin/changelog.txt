@@ -1,5 +1,12 @@
-New features added in version 1.7:
-	1. Web GUI for invoking API calls
+Version 1.7:
+	Refer: JIRA cards CP-5 and CP-8.
+	
+	Oct, 10, 2018:
+	7. Bug fix in mine API. Timestamp, txnid and signature parameters are missing when constructing the chain.
+	8. index.html - version, peers and results text boxes made read-only.
+	
+	Oct, 9, 2018:
+	1. Web GUI for invoking API calls 
 		Populate updated values into appropriate places eg. update miner displays the new value in miner box
 		
 	2. Version API
@@ -12,3 +19,4 @@ New features added in version 1.7:
 		amount - accepts float values also.
 	5. Detect peers calls connect_to_peers_of_peers and return the full peer list.
 	6. Usage notes is given in ReadMe.md
+	

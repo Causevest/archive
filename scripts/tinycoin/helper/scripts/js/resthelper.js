@@ -120,7 +120,8 @@ function processRq(rq,id,nxtopn) {
 			results.style.font = '1em bold';
 		})
 		.then(function(rsp) {
-			id.value = rsp;
+			if(id != null)
+				id.value = rsp;
 			results.value = makeResString(rsp);
 			results.style.color = 'green';
 			results.style.font = '1em bold';

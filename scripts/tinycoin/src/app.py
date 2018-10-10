@@ -34,6 +34,7 @@ default_miner = "default_miner_address"
 
 # Transactions that this node is doing
 nodes_transactions = []
+nwtxnid = 1
 
 # Link of peer nodes
 peer_nodes = set()
@@ -210,6 +211,7 @@ def mine():
     if not nodes_transactions:
         return "Transaction is empty, noting to mine."
     
+    global nwtxnid;
     last_block = get_block_obj(blockchain[len(blockchain) - 1])
     last_proof = json.loads(last_block.data)['proof_of_work']
 
@@ -218,7 +220,13 @@ def mine():
 
     # Ones the miner found out the proof of work
     # the network rewards the miner by adding a transaction
-    nodes_transactions.append(Transaction("network", miner_address, 1).to_json())
+    nodes_transactions.append(Transaction("network", 
+        miner_address, 
+        1,
+        get_string_datetime(date.datetime.now()),
+        str(nwtxnid),
+        "Under Research ...").to_json())
+    nwtxnid += 1
 
     # Create a block
     new_block_data = Data(proof, nodes_transactions).create()

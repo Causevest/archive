@@ -25,7 +25,7 @@
 		<div id="version-division" class="tooltip">
 			<span class="tooltiptext">Tinycoin version</span>
 			<label for="version">Tinycoin Version:</label>
-			<input id="version" type="text" name="version" value=""/>
+			<input id="version" type="text" name="version" value="" readonly />
 			<div class="gap0"></div>
 			<button id="getversion" class="btn" onclick="getVersion(event)">Get Version</button>
 		</div>
@@ -53,7 +53,7 @@
 	<div id="peers-division" class="tabcontent">
 		<div id="peer-list">
 			<label for="peers">Peers</label>
-			<textarea id="peers" cols="40" name="peers" rows="5"></textarea><br/>
+			<textarea id="peers" cols="40" name="peers" rows="5" readonly></textarea><br/>
 			<button id="alignpeers" class="btn" onclick="alignPeers(event)">Peers</button>
 		</div>
 		<div id="peer-input-list">
@@ -93,7 +93,7 @@
 	<div class="gap1"></div>
 	<div id="results-division">
 		<label for="results">Results</label>
-		<textarea id="results" cols="80" name="results" rows="5"></textarea>
+		<textarea id="results" cols="80" name="results" rows="5" readonly></textarea>
 		<div class="gap0"></div>
 		<button id="clearResults" class="btn" onclick="clearResults(event)">Clear Results</button>
 	</div>
