@@ -1,0 +1,22 @@
+# Use an official Python runtime as a parent image
+FROM python:3.6-slim
+
+# Set the working directory to /tinycoin
+WORKDIR /tinycoin
+
+# Copy the current directory contents into the container at /tinycoin
+ADD . /tinycoin
+
+# Install any needed packages specified in requirements.txt
+RUN pip install --trusted-host pypi.python.org -r requirements.txt
+
+# Make port 80 available to the world outside this container
+EXPOSE 80
+
+# Define environment variable
+ENV MINER_ADDRESS 'sreerama-vipparti-tinycoin-v1.7-docker'
+ENV HOST '0.0.0.0'
+ENV PORT 80
+
+# Run app.py when the container launches
+CMD ["python", "src/app.py"]

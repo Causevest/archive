@@ -68,12 +68,22 @@ function makeGetHeaders(conttp) {
 }
 
 function getUrl() {
-	var url = document.getElementById("url").value;
+	var url;
+	if(serveraddress.trim().length > 0) {
+		return serveraddress;
+	}
+	url = document.getElementById("url").value.trim();
 	console.debug("URL Address: "+url);
+	if(!url.startsWith('http://') && !url.startsWith('https://'))
+		url = 'http://'+url;
+	serveraddress = url;
 	return url;
 }
 function makeUrl(api) {
-	var u = getUrl()+"/"+api;
+	var u = getUrl();
+	if(!u.endsWith('/'))
+		u += "/";
+	u += api;
 	return u;
 }
 

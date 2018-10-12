@@ -217,10 +217,10 @@ header.stuck {height: 50px;}
     padding-top: 1em;
     padding-bottom: 1em;
 }
-#txn {
+#txn, #clrtxn {
     margin: auto;
-    padding-top: 1em;
-    padding-bottom: 1em;    
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;    
 }
 
 /******************************************* MINE, CONSENSUS, BLOCKS *******************************************/

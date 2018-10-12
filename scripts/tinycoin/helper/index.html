@@ -15,7 +15,6 @@
 <body>
 	<h3>Tinycoin</h3>
 	<div class="gap2"></div>
-	<div class="gap1"></div>
 	<div id="tinycoin-client">
 		<div id="url-division" class="tooltip">
 			<span class="tooltiptext">Web calls will be sent to this URL</span>
@@ -58,7 +57,8 @@
 		</div>
 		<div id="peer-input-list">
 			<label for="peerinput">New Peers</label>
-			<textarea id="peerinput" cols="40" name="peerinput" rows="5"></textarea>
+			<textarea id="peerinput" cols="40" name="peerinput" rows="5"></textarea><br/>
+			<button id="clrpeerinput" class="btn" onclick="clrPeerIp(event)">Clear</button><br/>
 		</div>
 		<div id="peer-operations">
 			<button id="getpeers" class="btn" onclick="getPeers(event)">Get Peers</button><br/>
@@ -83,6 +83,7 @@
 		<input id="amount" type="text" name="amount" value=""/><br/>
 		<div class="gap2"></div>
 		<button id="txn" class="btn" onclick="transaction(event)">Perform Transaction</button><br/>
+		<button id="clrtxn" class="btn" onclick="clearTxn(event)">Clear Transaction</button><br/>
 	</div>
 	<div id="other-operations-division" class="tabcontent">
 		<button id="mine" class="btn" onclick="mine(event)">Perform Mine</button>
@@ -94,9 +95,9 @@
 	<div id="results-division">
 		<label for="results">Results</label>
 		<textarea id="results" cols="80" name="results" rows="5" readonly></textarea>
-		<div class="gap0"></div>
 		<button id="clearResults" class="btn" onclick="clearResults(event)">Clear Results</button>
 	</div>
+	<script src="scripts/js/apihelper.js"></script>
 	<script src="scripts/js/handlers.js"></script>
 	<script src="scripts/js/resthelper.js"></script>
 	<script src="scripts/js/utilities.js"></script>

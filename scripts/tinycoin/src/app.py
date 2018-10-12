@@ -29,7 +29,7 @@ miner_address = None
 # Version 1.7 changes
 # Just in case
 default_ip = "0.0.0.0" # Works in all cases whether from docker or command window etc.
-default_port = 5000
+default_port = "5000"
 default_miner = "default_miner_address"
 
 # Transactions that this node is doing
