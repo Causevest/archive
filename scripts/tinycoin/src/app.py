@@ -7,11 +7,11 @@ import datetime as date
 from flask import Flask
 from flask import request
 
-from .utils import *
-from .transaction import Transaction
-from .genesis import create_genesis_block
-from .block import Block, Data, get_block_obj
-
+from utils import *
+from transaction import Transaction
+from genesis import create_genesis_block
+from block import Block, Data, get_block_obj
+from helper import address
 
 node = Flask(__name__)
 
@@ -28,10 +28,15 @@ nodes_transactions = []
 # Link of peer nodes
 peer_nodes = set()
 # If we are mining or not
-mining = True 
+mining = True
 
 # Mock the rest request
 mock = False
+
+
+@node.route("/generate_address", methods=['GET'])
+def generate_address():
+    return address.generate_address()
 
 
 @node.route("/get_miner_address", methods=['GET'])
@@ -123,13 +128,13 @@ def transaction():
         transaction_received['to'], 
         transaction_received['amount']
     )
-    
+  
     # print transaction logs
     print("New Transaction")
     print(f"From: { transaction_received['from'] }")
     print(f"From: { transaction_received['to'] }")
     print(f"Amount: { transaction_received['amount'] }\n")
-    
+ 
     if transaction.is_valid():
         nodes_transactions.append(transaction.to_json())
         return "Transaction submission successful\n"

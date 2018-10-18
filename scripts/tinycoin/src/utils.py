@@ -21,7 +21,6 @@ def find_longest_sub_list(list_of_lists):
     return largest
 
 
-
 if __name__ == "__main__":
     list = [
         ['A'],
