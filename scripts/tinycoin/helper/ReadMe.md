@@ -14,22 +14,23 @@ The index.html is the main page for accessing the tincycoin API.
                                    Update Miner Address button updates the miner address and displays new value - "update_miner_address" API call
 
 ##### Peers Tab: Displays the peer operations
-		Get Peers button: Displays the current peers in the Peers text area. - "peers" API call
-		Add Peers button: Clears the current list of peers and creates new peers. - "add_peers" API call
-							New peers are to be entered in New Peers box one peer per line
-		Append Peers button: Append Peers button: Adds new peers to the current list of peers. - "append_peers" API call
-							  New peers are to be entered in New Peers box one peer per line
-		Detect Peers button: Adds peers of all current peers to current peer list. - "connect_to_peers_of_peers" API call
-		
-		Peers button: Arranges the peers; one peer per line
+		Format button: Arranges the peers; one peer per line
+		Clear button: Clears the content of peers list
+		Get button: Displays the current peers in the Peers text area. - "peers" API call
+		Add button: Adds list of peers replacing existing peers, if any. - "add_peers" API call
+		Append button: Adds peers to the current list of peers. - "append_peers" API call
+		Detect button: Adds peers of all current peers to current peer list. - "connect_to_peers_of_peers" API call	
 		
 ##### Transaction Tab: Makes a transaction
 		Perform Transaction button: Makes a transaction. - "transaction" API call
-			The added new fields are managed internally.
+		Clear Transaction button: Clears the contents of transaction fields.
 			
-##### Other Operations: Facilitates all the remaining operations.
+##### Other Operations Tab: Facilitates all the remaining operations.
 		Perform Mine button: "mine" API call
 		Perform Consensus: "consensus" API call
 		All Blocks: "blocks" API call
+
+##### Coins: Displays coins earned due to mining, spent in transaction and current balance of coins.
+##### TODO: Fetch these values from server side. Currently no info is maintained at server. Hence, if page is refreshed, values will be out of sync.
 		
 ##### Results: Shows the results of API calls.
