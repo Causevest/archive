@@ -27,8 +27,8 @@ TinycoinAPI =
 	"connect_to_peers_of_peers": ["connect_to_peers_of_peers", "get", "text", "peers", ""],
 	"transaction": ["transaction", "post", "json", "", ""],
 	"peers": ["peers", "get", "text", "peers", ""],
-	"mine": ["mine", "get", "text", "", ""],
-	"blocks": ["blocks", "get", "text", "", ""],
+	"mine": ["mine", "get", "text", "results", ""],
+	"blocks": ["blocks", "get", "text", "results", ""],
 	"consensus": ["consensus", "get", "text", "", ""],
 }
 
@@ -89,63 +89,33 @@ function makeUrl(api) {
 
 function processRq(rq,id,nxtopn) {
 	
-	try {
-		fetch(rq)
-		.then(function(rs) {
-			var type;
-
-			console.debug(rs);
-			console.debug(rs.headers);
-			console.debug(rs.headers.has("Content-Type"));
-
-			if(rs.headers.has("Content-Type")){
-				var conttp = rs.headers.get("Content-Type")
-				if(conttp.indexOf("text/html")>=0) {
-					type = 'text';
-				}
-				else if(conttp.indexOf("text/plain")>=0) {
-					type = 'text';
-				}
-				else if(conttp.indexOf("application/json")>=0) {
-					type = 'json';
-				}
-			}
-			
-			if(!rs.ok) {
-				throw Error(rs.statusText);				
-			}
-			if(type=='text') {
-				return rs.text()
-			}
-			else if(type=='json') {
-				return JSON.stringify(rs.json())
-			}
-			else {
-				console.log('What type it is?')
-			}
-		})
-		.catch(function(err){ 
-			results.value = makeResString("Error occured: "+err);
-			results.style.color = 'red';
-			results.style.font = '1em bold';
-		})
-		.then(function(rsp) {
-			if(id != null)
-				id.value = rsp;
-			results.value = makeResString(rsp);
-			results.style.color = 'green';
-			results.style.font = '1em bold';
-			if(nxtopn != '') {
-				console.debug(nxtopn)
-				perform(nxtopn,'')
-			}
-		})
-	}
-	catch(error) {
-		results.value = makeResString("Error: "+error);
+	fetch(rq)
+	.then(function(rs) {
+		if(!rs.clone().ok) {
+			throw Error(rs.statusText);
+		}
+		return rs.clone().json();
+	})
+	.catch(function(err){ 
+		results.value = makeResString("Error occured: "+err);
 		results.style.color = 'red';
 		results.style.font = '1em bold';
-	}
+	})
+	.then(function(rsp) {
+		console.debug(rsp);
+		if(id != null) {
+			id.value = rsp['data'];
+		}
+
+		displayCoins(rsp);
+		results.value = makeResString(rsp['text']);
+		results.style.color = 'green';
+		results.style.font = '1em bold';
+		if(nxtopn != '') {
+			console.debug(nxtopn)
+			perform(nxtopn,'')
+		}
+	})
 }
 
 function perform(api, data) {

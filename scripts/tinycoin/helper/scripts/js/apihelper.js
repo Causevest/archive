@@ -2,21 +2,20 @@
 /* Globals */
 var currtxnid="";
 var serveraddress=" ";
+var balance=10;
 
 /* Version Handling */
 function getVersion(evt) {
 	console.debug("Get tinycoin version");
-	resetActiveClass(evt);
 
 	eraseResults();
-	clrVersion();
+	clrVersion(); // OK for now, if required send element Id to a general function
 	perform("version", '')
 }
 
 /* Miner Address Handling */
 function getMiner(evt) {
 	console.debug("Get Miner Address");
-	resetActiveClass(evt);
 
 	var id = document.getElementById("miner");
 	console.debug("Displayed Miner Address: "+id.value);
@@ -27,7 +26,6 @@ function getMiner(evt) {
 
 function updateMiner(evt) {
 	console.debug("Update Miner Address");
-	resetActiveClass(evt);
 
 	var id = document.getElementById("miner");
 	console.debug("Displayed Miner Address: "+id.value);
@@ -43,7 +41,6 @@ function updateMiner(evt) {
 /* Peers Handling */
 function getPeers(evt) {
 	console.debug("Get peers");
-	resetActiveClass(evt);
 
 	eraseResults();
 	perform("peers", '')
@@ -51,9 +48,8 @@ function getPeers(evt) {
 
 function addPeers(evt) {
 	console.debug("Add peers");
-	resetActiveClass(evt);
 
-	var input = document.getElementById("peerinput")
+	var input = document.getElementById("peers")
 	var peerlst = input.value;
 
 	var data = peerList(peerlst)
@@ -63,10 +59,9 @@ function addPeers(evt) {
 }
 
 function appPeers(evt) {
-	console.debug("Append peers")
-	resetActiveClass(evt);
+	console.debug("Append peers");
 
-	var input = document.getElementById("peerinput")
+	var input = document.getElementById("peers")
 	var peerlst = input.value;
 
 	var data = peerList(peerlst);
@@ -76,7 +71,6 @@ function appPeers(evt) {
 
 function detectPeers(evt) {
 	console.debug("Detect peers");
-	resetActiveClass(evt);
 
 	eraseResults();
 	perform("connect_to_peers_of_peers", '')
@@ -84,7 +78,6 @@ function detectPeers(evt) {
 
 function connect(evt) {
 	console.debug("Perform connect");
-	resetActiveClass(evt);
 
 	eraseResults();
 	perform("connect_to_peers_of_peers", '')
@@ -93,7 +86,6 @@ function connect(evt) {
 /* Transaction */
 function transaction(evt) {
 	console.debug("Perform transaction");
-	resetActiveClass(evt);
 
 	var src = document.getElementById("from")
 	var tgt = document.getElementById("to")
@@ -118,7 +110,6 @@ function transaction(evt) {
 /* Other operations */
 function mine(evt) {
 	console.debug("Perform mine");
-	resetActiveClass(evt);
 
 	eraseResults();
 	perform("mine", '')
@@ -126,7 +117,6 @@ function mine(evt) {
 
 function consensus(evt) {
 	console.debug("Perform consensus");
-	resetActiveClass(evt);
 
 	eraseResults();
 	perform("consensus", '')
@@ -134,7 +124,6 @@ function consensus(evt) {
 
 function blocks(evt) {
 	console.debug("Perform blocks");
-	resetActiveClass(evt);
 
 	eraseResults();
 	perform("blocks", '')

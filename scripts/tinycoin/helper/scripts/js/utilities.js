@@ -54,5 +54,23 @@ function makeResString(strval) {
 		resstr = results + "\n";
 	}
 	resstr = resstr + strval;
-	return (resstr);
+	return (resstr); 
+}
+
+function displayCoins(result) {
+	earned = parseInt(document.getElementById('earned').value)
+	spent = parseInt(document.getElementById('spent').value)
+
+	coins = parseInt(result['coins'])
+	if(coins >= 0) {
+		earned = earned + coins;
+	}
+	else {
+		spent = spent - coins;
+	}
+
+	balance = balance + coins;	
+	document.getElementById('earned').value = earned
+	document.getElementById('spent').value = spent
+	document.getElementById('balance').value = balance
 }

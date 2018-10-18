@@ -6,6 +6,7 @@ import requests
 import datetime as date
 from flask import Flask
 from flask import request
+from flask import jsonify
 from flask_cors import CORS
 import requests
 
@@ -32,25 +33,41 @@ default_ip = "0.0.0.0" # Works in all cases whether from docker or command windo
 default_port = "5000"
 default_miner = "default_miner_address"
 
+
 # Transactions that this node is doing
 nodes_transactions = []
-nwtxnid = 1
+nwtxnid = int(1)
 
 # Link of peer nodes
 peer_nodes = set()
 # If we are mining or not
 mining = True 
+miningfees = int(1)
 
 # Mock the rest request
 mock = False
 
+# global messages
+success = "success"
+failed = "failed"
+resultStatus = "result"
+resultText ="text"
+resultData = "data"
+resultCoins = "coins"
 
 @node.route("/get_miner_address", methods=['GET'])
 def get_miner_address():
     """
         Returns miner address
     """
-    return miner_address
+    global success;
+    result = {
+        resultStatus: success,
+        resultText: "Successfully fetched miner address",
+        resultData: miner_address,
+        resultCoins: 0
+    };
+    return jsonify(result)
 
 
 @node.route("/update_miner_address", methods=['POST'])
@@ -58,21 +75,37 @@ def update_miner_address():
     """
         Update miner address
     """
-    address = request.get_json()['miner_address']
+    address = request.get_json()['miner_address'];
+    result = {};
+    result[resultData] = '';
+    result[resultCoins] = 0;
+    
+    global success;
+    global failed;
     if not address:
-        return "Can not update miner_address as valid miner address is not found"
+        result[resultStatus] = failed
+        result[resultText] = "Can not update miner_address as valid miner address is not found"
     else:
         global miner_address
         miner_address = address
-        return "Successfully updated miner address"
+        result[resultStatus] = success
+        result[resultText] = "Successfully updated miner address"
 
+    return jsonify(result)
 
 @node.route("/peers", methods=['GET'])
 def peer():
     """
         Returns peers of this node
     """
-    return json.dumps(list(peer_nodes)) 
+    global success;  
+    result = {
+        resultStatus: success,
+        resultText: "Returned peer list",
+        resultData: json.dumps(list(peer_nodes)),
+        resultCoins: 0
+    }
+    return jsonify(result)
 
 
 @node.route("/add_peers", methods=['POST'])
@@ -80,14 +113,23 @@ def add_peers():
     """
         Override the existing peers list with new `given peers` list
     """
+    global success;
+    global failed;   
+    result = {
+        resultData: '',
+        resultCoins: 0
+    }
     peers = json.loads(request.data)
     if peers:
         # clear the peer list
         peer_nodes.clear()
         peer_nodes.update(peers)
-        return "Peer list updated"
+        result[resultStatus] =success
+        result[resultText] = "Peer list updated. Peer/peers replaced with new peer/peers."
     else:
-        return "Failed while adding peer/peers. Error[empty peer list received]"
+        result[resultStatus] = failed
+        result[resultText] = "Failed while adding peer/peers. Error[empty peer list received]"
+    return jsonify(result)
 
 
 @node.route("/append_peers", methods=['POST'])
@@ -95,12 +137,23 @@ def append_peers():
     """
         Append peers to this node
     """
+    global success;
+    global failed;
+
+    result = {
+        resultData: '',
+        resultCoins: 0
+    }
     peers = json.loads(request.data)
     if peers:
         peer_nodes.update(peers)
-        return "Peer list updated"
+        result[resultStatus] = success
+        result[resultText] = "Peer list updated. Peer/peers is/are appended."
     else:
-        return "Failed while adding peer/peers. Error[empty peer list received]"
+        result[resultStatus] = failed
+        result[resultText] = "Failed while appending peer/peers. Error[empty peer list received]"
+
+    return jsonify(result)
 
 
 @node.route("/connect_to_peers_of_peers", methods=['GET'])
@@ -122,7 +175,15 @@ def connect_to_peers_of_peers():
         peers.remove(this_node)
     # update the current peers list
     peer_nodes.update(peers)
-    return json.dumps(list(peer_nodes))
+
+    global success;
+    result = {
+        resultStatus: success,
+        resultText: "Returned updated peer list",
+        resultData: json.dumps(list(peer_nodes)),
+        resultCoins: 0
+    }
+    return jsonify(result)
 
 
 @node.route("/transaction", methods=['POST'])
@@ -146,16 +207,33 @@ def transaction():
     print(f"timestamp: { transaction_received['timestamp'] }")
     print(f"TxnId: { transaction_received['txnid'] }\n")
     
+    global success;
+    global failed;
+    result = {
+        resultData: '',
+        resultCoins: -int(transaction_received['amount'])
+    }
     if transaction.is_valid():
         nodes_transactions.append(transaction.to_json())
-        return "Transaction submission successful\n"
+        result[resultStatus] = success
+        result[resultText] = "Transaction submission successful."
     else:
-        return "Invalid transaction\n"
+        result[resultStatus] = failed
+        result[resultText] = "Invalid transaction"
 
+    return jsonify(result)
 
 @node.route("/blocks", methods=['GET'])
 def get_blocks():
-    return json.dumps(blockchain)
+    global success;
+
+    result = {
+        resultStatus: success,
+        resultText: "Returned blocks",
+        resultData: json.dumps(blockchain),
+        resultCoins: 0
+    }
+    return json.dumps(result)
 
 
 def find_new_chains():
@@ -190,8 +268,16 @@ def consensus():
     global blockchain
     if len(longest_chain) > len(blockchain):
         blockchain = longest_chain
-    
-    return "Consensus successfully done"
+
+    global success;
+
+    result ={
+        resultStatus: success,
+        resultText: "Consensus successfully done",
+        resultData: '',
+        resultCoins: 0
+    }
+    return jsonify(result)
 
 
 def proof_of_work(last_proof):
@@ -211,7 +297,7 @@ def mine():
     if not nodes_transactions:
         return "Transaction is empty, noting to mine."
     
-    global nwtxnid;
+    global nwtxnid, miningfees;
     last_block = get_block_obj(blockchain[len(blockchain) - 1])
     last_proof = json.loads(last_block.data)['proof_of_work']
 
@@ -222,7 +308,7 @@ def mine():
     # the network rewards the miner by adding a transaction
     nodes_transactions.append(Transaction("network", 
         miner_address, 
-        1,
+        miningfees,
         get_string_datetime(date.datetime.now()),
         str(nwtxnid),
         "Under Research ...").to_json())
@@ -240,7 +326,15 @@ def mine():
     mined_block = Block(new_block_index, new_block_timestamp, new_block_data, last_block_hash)
     blockchain.append(mined_block.to_json())
     # Broadcast to the world that we have mined
-    return mined_block.to_json() + "\n"
+    global success;
+
+    result = {
+        resultStatus: success,
+        resultText: "returned mined block",
+        resultData: mined_block.to_json(),
+        resultCoins: miningfees
+    }
+    return jsonify(result)
 
 
 @node.route("/version", methods=['GET'])
@@ -249,10 +343,23 @@ def version():
     versonFile = os.path.join(currdir, '../VERSION')
     version = "default"
     file = Path(versonFile)
-    if not file.exists():
-        print("'%s' doesn't exists." % versonFile)
-        return version
 
+    global success;
+    global failed;
+    result = { }
+
+    if not file.exists():
+        text = "'%s' doesn't exists." % versonFile
+        print(text)
+        result = {
+            resultStatus: failed,
+            resultText: text,
+            resultData: verson,
+            resultCoins: 0
+        }
+        return result.to_json()
+
+    # WARNING: Returning the first non-empty line from VERSION, in full. No parsing whatsoever
     with file.open("r") as fd:
         for line in fd:
             line.strip()
@@ -260,8 +367,15 @@ def version():
                 continue
             version = line
             break
-    return version
 
+    result = {
+        resultStatus: success,
+        resultText: 'Returned the fetched Tinycoin version',
+        resultData: version,
+        resultCoins: 0
+    }
+
+    return jsonify(result)
 
 if __name__ == "__main__":
     print("Tinycoin server started ...!\n")

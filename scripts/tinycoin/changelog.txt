@@ -1,5 +1,16 @@
 Version 1.7:
 	Refer: JIRA cards CP-5 and CP-8.
+	
+	
+	Oct, 18, 2018:
+	HTML page
+		14. Boot strap 4 implementation as suggested by Prakash
+		15. Added coins division
+		16. Handling of coin balance in HTML, for now
+	Tinycoin:
+		16. All API return JSON object in a fixed format
+	
+	#######################################################################
 	Oct, 12, 2018:
 	HTML page
 		 9. Bug fix - trim operation on server address
@@ -8,10 +19,12 @@ Version 1.7:
 		12. clear buttons at transaction and new peers input list. 
 	Others:
 		13. Dockerfile for Windows 7 platform
-	
+		
+	#######################################################################
 	Oct, 10, 2018:
 		7. Bug fix in mine API. Timestamp, txnid and signature parameters are missing when constructing the chain.
 		8. index.html - version, peers and results text boxes made read-only.
+	#######################################################################
 	
 	Oct, 9, 2018:
 		1. Web GUI for invoking API calls 

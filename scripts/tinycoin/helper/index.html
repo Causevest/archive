@@ -1,102 +1,133 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-100 w-100">
 <head>
     <meta charset="utf-8">
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta name="description" content="">
 	<meta name="author" content="">
-
-    <!--link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Open+Sans' type='text/css'-->
+	<!-- Boot strap 4 support -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+ 
 	<link rel='stylesheet' href='styles/tchelper.css' type='text/css'>
 
-    <title>Tiny coin version 1.6 web-client</title>
+    <title>Tiny coin version 1.7 web-client</title>
 </head>
-<body>
-	<h3>Tinycoin</h3>
-	<div class="gap2"></div>
-	<div id="tinycoin-client">
-		<div id="url-division" class="tooltip">
-			<span class="tooltiptext">Web calls will be sent to this URL</span>
-			<label for="url">Tinycoin Server Address:</label>
-			<input id="url" type="url" name="url" value="http://localhost:5000"/>
+<body class="h-100 w-100">
+<div class="container h-100 w-100">
+	<div class="container border bg-secondary align-content-center my-2">
+		<h3 class="text-center text-white">Tinycoin</h3>
+	</div>
+	<div id="tinycoin-client" class="container border border-secondary rounded bg-light my-1">
+		<div id="version-division" class="row my-1">
+			<label for="version" class="col-xl-2 ip-label">Tinycoin Version:</label>
+			<input id="version" type="text" class="col-xl-1" value="" readonly />
+			<button id="getversion" type="button" class="btn col-xl-1 mx-2" onclick="getVersion(event)">Get</button>
 		</div>
-		<div id="version-division" class="tooltip">
-			<span class="tooltiptext">Tinycoin version</span>
-			<label for="version">Tinycoin Version:</label>
-			<input id="version" type="text" name="version" value="" readonly />
-			<div class="gap0"></div>
-			<button id="getversion" class="btn" onclick="getVersion(event)">Get Version</button>
+		<div id="url-division" class="row my-1">
+			<label for="url" class="col-xl-2 ip-label">Tinycoin Server:</label>
+			<input id="url" type="url" class="col-xl-8" value="http://localhost:5000"/>
 		</div>
-		<div id="miner-division" class="tooltip">
-			<div id="miner-information">
-				<span class="tooltiptext">Current miner address (TODO: generate it)</span>
-				<label for="miner">Miner address:</label>
-				<input id="miner" type="text" name="miner" value=""/>
-			</div>
-			<div class="gap0"></div>
-			<div id="miner-operation">
-				<button id="get-miner" class="btn" onclick="getMiner(event)">Get Miner Address</button>
-				<button id="update-miner" class="btn" onclick="updateMiner(event)">Update Miner Address</button>
-			</div>
+		<div id="miner-division" class="row my-1">
+			<label for="miner" class="col-xl-2 ip-label">Miner address:</label>
+			<input id="miner" type="text" class="col-xl-6" value=""/>
+			<button id="get-miner" type="button" class="btn col-xl-1 mx-2" onclick="getMiner(event)">Get</button>
+			<button id="update-miner" type="button" class="btn col-xl-1 mx-2" onclick="updateMiner(event)">Update</button>
 		</div>
 	</div>
-	<div class="gap2"></div>
-	<div class="gap1"></div>
-	<div class="tab">
-	  <button class="tablinks" onclick="openDiv(event, 'peers-division')">Peers</button>
-	  <button class="tablinks" onclick="openDiv(event, 'transaction-division')">Transaction</button>
-	  <button class="tablinks" onclick="openDiv(event, 'other-operations-division')">Other Operations</button>
-	</div>	
 
-	<div id="peers-division" class="tabcontent">
-		<div id="peer-list">
-			<label for="peers">Peers</label>
-			<textarea id="peers" cols="40" name="peers" rows="5" readonly></textarea><br/>
-			<button id="alignpeers" class="btn" onclick="alignPeers(event)">Peers</button>
+	<div id="tinycoin-operations" class="d-flex my-1">
+		<div id="tinycoin-actions" class=" border border-secondary rounded bg-light w-75 my-1">
+			<ul  class="nav nav-tabs nav-justified w-100">
+			  <li class="nav-item">
+			  	<a class="nav-link btn" href="#peers-division" data-toggle="tab" role="tab">Peers</a>
+			  </li>
+			  <li class="nav-item">
+			  	<a class="nav-link btn" href="#transaction-division" data-toggle="tab" role="tab">Transaction</a>
+			  </li>
+			  <li class="nav-item">
+			  	<a class="nav-link btn" href="#other-operations-division" data-toggle="tab" role="tab">Other Operations</a>
+			  </li>
+			  <li class="nav-item">
+			  	<a class="nav-link btn active" href="#hide-division" data-toggle="tab" role="tab">Hide</a>
+			  </li>
+			</ul>
+			<div class="tab-content clearfix w-100"">
+				<div id="peers-division" class="tab-pane container h-100 w-100 my-1 mx-1" role="tabpanel">
+					<div id="peer-list" class="row  align-items-center">
+						<label for="peers" class="align-middle">Peers:&nbsp;</label>
+						<textarea id="peers" cols="40" name="peers" rows="5"></textarea>
+					</div>
+					<div id="peer-operations row="row align-items-center">
+						<button id="alignpeers" type="button" class="btn col-xl-2 mr-1 my-1" onclick="alignPeers(event)">Format</button>
+						<button id="clrpeerinput" type="button" class="btn col-xl-1 mx-1 my-1" onclick="clrPeers(event)">Clear</button>
+						<button id="getpeers" type="button" class="btn col-xl-1 mx-1 my-1" onclick="getPeers(event)">Get</button>
+						<button id="addpeers" type="button" class="btn col-xl-1 mx-1 my-1" onclick="addPeers(event)">Add</button>
+						<button id="apppeers" type="button" class="btn col-xl-2 mx-1 my-1" onclick="appPeers(event)">Append</button>
+						<button id="detectpeers" type="button" class="btn col-xl-2 ml-1 my-1" onclick="detectPeers(event)">Detect</button>
+					</div>				
+				</div>
+				<div id="transaction-division" class="tab-pane container h-100 my-1 mx-1" role="tabpanel">
+					<div class="row mt-2 mb-1">
+						<label for="from" class="col-xl-2 text-left">From address:</label>
+						<input id="from" type="text" class="col-xl-4" value=""/>
+					</div>
+					<div class="row my-1">
+						<label for="to" class="col-xl-2 text-left">To address:</label>
+						<input id="to" type="text" class="col-xl-4" value=""/>
+					</div>
+					<div class="row my-1">
+						<label for="amount" class="col-xl-2 text-left">Amount:</label>
+						<input id="amount" type="text" class="col-xl-4" value=""/>
+					</div>
+					<div class="row mt-1 mb-2">
+						<button id="txn" type="button" class="btn col-x1-2 ml-1 my-1 mr-2" onclick="transaction(event)">Perform Transaction</button>
+						<button id="clrtxn" type="button" class="btn col-x1-2 my-1 ml-2 mr-1" onclick="clearTxn(event)">Clear Transaction</button>
+					</div>
+				</div>
+				<div id="other-operations-division" class="tab-pane container h-100 w-100 my-1 mx-1" role="tabpanel">
+					<div class="row">
+						<button id="mine" type="button" class="btn mx-2 my-2" onclick="mine(event)">Perform Mine</button>
+					</div>
+					<div class="row">
+						<button id="consensus" type="button" class="btn mx-2 my-2" onclick="consensus(event)">Perform Consensus</button>
+					</div>
+					<div class="row">
+						<button id="blocks" type="button" class="btn mx-2 my-2" onclick="blocks(event)">All blocks</button>
+					</div>
+				</div>
+				<div id="hide-division" class="tab-pane active h-100 my-1 mx-1" role="tabpanel">
+				</div>
+			</div>
 		</div>
-		<div id="peer-input-list">
-			<label for="peerinput">New Peers</label>
-			<textarea id="peerinput" cols="40" name="peerinput" rows="5"></textarea><br/>
-			<button id="clrpeerinput" class="btn" onclick="clrPeerIp(event)">Clear</button><br/>
-		</div>
-		<div id="peer-operations">
-			<button id="getpeers" class="btn" onclick="getPeers(event)">Get Peers</button><br/>
-			<div class="gap0"></div>
-			<button id="addpeers" class="btn" onclick="addPeers(event)">Add Peers</button><br/>
-			<div class="gap0"></div>
-			<button id="apppeers" class="btn" onclick="appPeers(event)">Append Peers</button><br/>
-			<div class="gap0"></div>
-			<button id="detectpeers" class="btn" onclick="detectPeers(event)">Detect Peers</button><br/>
+		<div id="coins-division" class="container border border-secondary rounded bg-light h-100 w-25 my-1">
+			<div class="row aling-content-center h-25 w-100 my-1 mx-1">
+				<label class="w-100 text-info text-center font-weight-bold">Coins</label>
+			</div>
+			<div class="row h-25 mx-1 my-1">
+				<label for="earned" class="col-xl-6 text-right">Earned:</label>
+				<input id="earned" type="text" class="col-xl-4" value="0" readonly="" />
+			</div>
+			<div class="row h-25 mx-1 my-1">
+				<label for="spent" class="col-xl-6 text-right">Spent:</label>
+				<input id="spent" type="text" class="col-xl-4" value="0" readonly="" />
+			</div>
+			<div class="row h-25 mt-1 mx-1 mb-3">
+				<label for="balance" class="col-xl-6 text-right">Balance:</label>
+				<input id="balance" type="text" class="col-xl-4" value="10" readonly="" />
+			</div>
 		</div>
 	</div>
-	<div id="transaction-division" class="tabcontent">
-		<label for="from">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;From&nbsp;address:&nbsp;</label>
-		<input id="from" type="text" name="from" value=""/><br/>
-		<div class="gap0"></div>
 
-		<label for="to">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To&nbsp;address:&nbsp;</label>
-		<input id="to" type="text" name="to" value=""/><br/>
-		<div class="gap0"></div>
-		
-		<label for="amount">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Amount:&nbsp;</label>
-		<input id="amount" type="text" name="amount" value=""/><br/>
-		<div class="gap2"></div>
-		<button id="txn" class="btn" onclick="transaction(event)">Perform Transaction</button><br/>
-		<button id="clrtxn" class="btn" onclick="clearTxn(event)">Clear Transaction</button><br/>
+	<div id="results-division" class="border border-secondary rounded bg-light w-100 my-1">
+		<label for="results" class="mx-2 align-middle">Results:&nbsp;</label>
+		<textarea id="results" cols="80" name="results" rows="5" class="my-1" readonly></textarea>
+		<button id="clearResults" type="button" class="btn text-primary font-weight-bold my-1" onclick="clearResults(event)">Clear Results</button>
 	</div>
-	<div id="other-operations-division" class="tabcontent">
-		<button id="mine" class="btn" onclick="mine(event)">Perform Mine</button>
-		<button id="consensus" class="btn" onclick="consensus(event)">Perform Consensus</button>
-		<button id="blocks" class="btn" onclick="blocks(event)">All blocks</button>
-	</div>
-	<div class="gap2"></div>
-	<div class="gap1"></div>
-	<div id="results-division">
-		<label for="results">Results</label>
-		<textarea id="results" cols="80" name="results" rows="5" readonly></textarea>
-		<button id="clearResults" class="btn" onclick="clearResults(event)">Clear Results</button>
-	</div>
+</div>
 	<script src="scripts/js/apihelper.js"></script>
 	<script src="scripts/js/handlers.js"></script>
 	<script src="scripts/js/resthelper.js"></script>
