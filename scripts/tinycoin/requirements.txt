@@ -1,4 +1,14 @@
-# This application requires these dependencies
-
-requests
-flask
+blocksmith==1.2.1
+certifi==2018.10.15
+chardet==3.0.4
+Click==7.0
+ecdsa==0.13
+Flask==1.0.2
+idna==2.7
+itsdangerous==0.24
+Jinja2==2.10
+MarkupSafe==1.0
+pycryptodome==3.6.6
+requests==2.19.1
+urllib3==1.23
+Werkzeug==0.14.1
