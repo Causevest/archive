@@ -14,11 +14,13 @@ from utils import *
 from transaction import Transaction
 from genesis import create_genesis_block
 from block import Block, Data, get_block_obj
+from flask_ngrok import run_with_ngrok
 
 from pathlib import Path
 
 node = Flask(__name__)
 CORS(node)
+run_with_ngrok(node)
 
 # Create a blockchain and initialize it with a genesis block
 blockchain = [create_genesis_block()]
@@ -376,6 +378,12 @@ def version():
     }
 
     return jsonify(result)
+
+
+@node.route('/auto_peer')
+def auto_peer():
+    pass
+
 
 if __name__ == "__main__":
     print("Tinycoin server started ...!\n")

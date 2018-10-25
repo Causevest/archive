@@ -11,6 +11,7 @@ class Data(object):
     def __init__(self, proof_of_work, transactions=[]):
          self.transactions = transactions
          self.proof_of_work = proof_of_work
+        
     
     def add_transaction(self, transaction):
         """
@@ -76,5 +77,5 @@ if __name__ == "__main__":
     b = Block(1, "2018-10-2025", "this is a data", "2233cdd-44dffd-33443dd-ddd332w")
     print(b.to_json() + "\n")
     
-    
+
     

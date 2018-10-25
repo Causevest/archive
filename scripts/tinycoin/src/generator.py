@@ -1,7 +1,7 @@
 # This class generate new blocks into blockchain
 
 import datetime as date
-from block import Block
+
 
 class BlockGenerator(object):
 

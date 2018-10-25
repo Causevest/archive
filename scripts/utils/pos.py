@@ -11,9 +11,10 @@ MAX_RANDOM = 1000000000
 
 
 Block = namedtuple('Block', (
-	'Timestamp',
-	'Seed',
-	'Validator',
+	'Timestamp',    # Time block was validated
+	'Seed',         # Seed for next block
+	'Validator',    # Validator of the Block
+	'Stakes',       # List of stakes (tokens) by validators
 ))
 
 
@@ -27,8 +28,13 @@ class BlockChain:
 		self.block_chain.append(Block(
 				Timestamp=time(),
 				Seed=rand(MAX_RANDOM),
-				Validator=0))
+				Validator=0,
+				Stakes=[]
+		))
 		print('\t', self.block_chain[0])
+	
+	def decentralized_validation(self, block):
+		pass  # validation can be perform by calculating CDF and seeding random using previous seed
 	
 	def round(self):
 		seed(time())
@@ -64,7 +70,9 @@ class BlockChain:
 		self.block_chain.append(Block(
 				Timestamp=time(),
 				Seed=rand(MAX_RANDOM),
-				Validator=val_id))
+				Validator=val_id,
+				Stakes=list(self.validators.values())
+		))
 		print('New Block Appended:')
 		print('\t', self.block_chain[-1])
 
