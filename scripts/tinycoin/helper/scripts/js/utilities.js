@@ -57,20 +57,10 @@ function makeResString(strval) {
 	return (resstr); 
 }
 
-function displayCoins(result) {
-	earned = parseInt(document.getElementById('earned').value)
-	spent = parseInt(document.getElementById('spent').value)
-
-	coins = parseInt(result['coins'])
-	if(coins >= 0) {
-		earned = earned + coins;
-	}
-	else {
-		spent = spent - coins;
-	}
-
-	balance = balance + coins;	
-	document.getElementById('earned').value = earned
-	document.getElementById('spent').value = spent
-	document.getElementById('balance').value = balance
+function displayCoins(frm) {
+	console.debug(frm)
+	from = JSON.parse(frm)
+	document.getElementById('earned').value = from['earned']
+	document.getElementById('spent').value = from['spent']
+	document.getElementById('balance').value = from['balance']
 }

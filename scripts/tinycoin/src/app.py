@@ -12,6 +12,8 @@ import requests
 
 from utils import *
 from transaction import Transaction
+from miner import Miner
+
 from genesis import create_genesis_block
 from block import Block, Data, get_block_obj
 from flask_ngrok import run_with_ngrok
@@ -26,14 +28,13 @@ run_with_ngrok(node)
 blockchain = [create_genesis_block()]
 previous_block = blockchain[0]
 
-# A completely random address of the owner of this node
-miner_address = None
-
 # Version 1.7 changes
 # Just in case
 default_ip = "0.0.0.0" # Works in all cases whether from docker or command window etc.
 default_port = "5000"
 default_miner = "default_miner_address"
+# A completely random address of the owner of this node
+owner = Miner(default_miner)
 
 
 # Transactions that this node is doing
@@ -55,7 +56,7 @@ failed = "failed"
 resultStatus = "result"
 resultText ="text"
 resultData = "data"
-resultCoins = "coins"
+resultFrom = "from"
 
 @node.route("/get_miner_address", methods=['GET'])
 def get_miner_address():
@@ -63,11 +64,13 @@ def get_miner_address():
         Returns miner address
     """
     global success;
+    global owner;
+    
     result = {
         resultStatus: success,
         resultText: "Successfully fetched miner address",
-        resultData: miner_address,
-        resultCoins: 0
+        resultData: owner.address,
+        resultFrom: owner.to_json()
     };
     return jsonify(result)
 
@@ -79,20 +82,22 @@ def update_miner_address():
     """
     address = request.get_json()['miner_address'];
     result = {};
-    result[resultData] = '';
-    result[resultCoins] = 0;
     
     global success;
     global failed;
+    global owner;
+    
     if not address:
         result[resultStatus] = failed
+        result[resultData] = ''
         result[resultText] = "Can not update miner_address as valid miner address is not found"
     else:
-        global miner_address
-        miner_address = address
+        owner.address = address
+        result[resultData] = owner.address
         result[resultStatus] = success
         result[resultText] = "Successfully updated miner address"
-
+        
+    result[resultFrom] = owner.to_json();
     return jsonify(result)
 
 @node.route("/peers", methods=['GET'])
@@ -100,12 +105,13 @@ def peer():
     """
         Returns peers of this node
     """
-    global success;  
+    global success;
+    global owner;    
     result = {
         resultStatus: success,
         resultText: "Returned peer list",
         resultData: json.dumps(list(peer_nodes)),
-        resultCoins: 0
+        resultFrom: owner.to_json()
     }
     return jsonify(result)
 
@@ -116,10 +122,12 @@ def add_peers():
         Override the existing peers list with new `given peers` list
     """
     global success;
-    global failed;   
+    global failed;
+    global owner;
+    
     result = {
         resultData: '',
-        resultCoins: 0
+        resultFrom: owner.to_json()
     }
     peers = json.loads(request.data)
     if peers:
@@ -141,10 +149,11 @@ def append_peers():
     """
     global success;
     global failed;
-
+    global owner;
+    
     result = {
         resultData: '',
-        resultCoins: 0
+        resultFrom: owner.to_json()
     }
     peers = json.loads(request.data)
     if peers:
@@ -179,12 +188,14 @@ def connect_to_peers_of_peers():
     peer_nodes.update(peers)
 
     global success;
+    global owner;
     result = {
         resultStatus: success,
         resultText: "Returned updated peer list",
         resultData: json.dumps(list(peer_nodes)),
-        resultCoins: 0
+        resultFrom: owner.to_json()
     }
+
     return jsonify(result)
 
 
@@ -211,29 +222,35 @@ def transaction():
     
     global success;
     global failed;
+    global owner;
+
+    amt = int(transaction_received['amount']);
     result = {
-        resultData: '',
-        resultCoins: -int(transaction_received['amount'])
+        resultData: ''
     }
     if transaction.is_valid():
         nodes_transactions.append(transaction.to_json())
         result[resultStatus] = success
         result[resultText] = "Transaction submission successful."
+        owner.spent += amt;
+        owner.balance -= amt;
     else:
         result[resultStatus] = failed
         result[resultText] = "Invalid transaction"
-
+    result[resultFrom] = owner.to_json()
+    
     return jsonify(result)
 
 @node.route("/blocks", methods=['GET'])
 def get_blocks():
     global success;
+    global owner;
 
     result = {
         resultStatus: success,
         resultText: "Returned blocks",
         resultData: json.dumps(blockchain),
-        resultCoins: 0
+        resultFrom: owner.to_json()
     }
     return json.dumps(result)
 
@@ -272,12 +289,13 @@ def consensus():
         blockchain = longest_chain
 
     global success;
-
+    global owner;
+    
     result ={
         resultStatus: success,
         resultText: "Consensus successfully done",
         resultData: '',
-        resultCoins: 0
+        resultFrom: owner.to_json()
     }
     return jsonify(result)
 
@@ -292,12 +310,21 @@ def proof_of_work(last_proof):
     # Broadcast this number as proof that we have successfully performed proof of work
     return incrementor
 
-
 @node.route("/mine", methods=['GET'])
 def mine():
+    global success;
+    global failed;
+    global owner;
+    result = { }
+    result[resultFrom] = owner.to_json()
+    
     # Return if no transaction is available to mine
+    
     if not nodes_transactions:
-        return "Transaction is empty, noting to mine."
+        result[resultStatus] = failed
+        result[resultText] = "Transaction is empty, noting to mine."
+        result[resultData] = ''
+        return jsonify(result)
     
     global nwtxnid, miningfees;
     last_block = get_block_obj(blockchain[len(blockchain) - 1])
@@ -309,7 +336,7 @@ def mine():
     # Ones the miner found out the proof of work
     # the network rewards the miner by adding a transaction
     nodes_transactions.append(Transaction("network", 
-        miner_address, 
+        owner.address, 
         miningfees,
         get_string_datetime(date.datetime.now()),
         str(nwtxnid),
@@ -324,18 +351,19 @@ def mine():
 
     # Empty the current transaction as it is already processed
     nodes_transactions[:] = []
+    
     # Creating new block
     mined_block = Block(new_block_index, new_block_timestamp, new_block_data, last_block_hash)
     blockchain.append(mined_block.to_json())
-    # Broadcast to the world that we have mined
-    global success;
 
-    result = {
-        resultStatus: success,
-        resultText: "returned mined block",
-        resultData: mined_block.to_json(),
-        resultCoins: miningfees
-    }
+    # Broadcast to the world that we have mined
+    owner.earned += miningfees
+    owner.balance += miningfees
+
+    result[resultStatus] = success,
+    result[resultText] = "Returned mined block",
+    result[resultData] = mined_block.to_json(),
+
     return jsonify(result)
 
 
@@ -348,6 +376,8 @@ def version():
 
     global success;
     global failed;
+    global owner;
+    
     result = { }
 
     if not file.exists():
@@ -357,9 +387,9 @@ def version():
             resultStatus: failed,
             resultText: text,
             resultData: verson,
-            resultCoins: 0
+            resultFrom: owner.to_json()
         }
-        return result.to_json()
+        return jsonify(result)
 
     # WARNING: Returning the first non-empty line from VERSION, in full. No parsing whatsoever
     with file.open("r") as fd:
@@ -374,7 +404,7 @@ def version():
         resultStatus: success,
         resultText: 'Returned the fetched Tinycoin version',
         resultData: version,
-        resultCoins: 0
+        resultFrom: owner.to_json()
     }
 
     return jsonify(result)
@@ -387,8 +417,8 @@ def auto_peer():
 
 if __name__ == "__main__":
     print("Tinycoin server started ...!\n")
-    miner_address = os.getenv("MINER_ADDRESS", default_miner)
-    if not miner_address:
+    owner.address = os.getenv("MINER_ADDRESS", default_miner)
+    if not owner.address:
         print("Can not start application as valid miner address is not found")
         # exit the system with error
         exit(1)
@@ -397,8 +427,10 @@ if __name__ == "__main__":
         peer_nodes.update(peers.split(","))
     host = os.getenv("HOST", default_ip)
     port = int(os.getenv("PORT", default_port))
+    
     print("Using the following info to run the Tinycoin server ...")
     print("\t Host:", host)
     print("\t Port:", port)
-    print("\tMiner:", miner_address)
+    print("\tMiner:", owner.address)
+    
     node.run(host = str(host), port = int(port))

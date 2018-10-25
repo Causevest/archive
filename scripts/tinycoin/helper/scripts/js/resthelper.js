@@ -107,7 +107,7 @@ function processRq(rq,id,nxtopn) {
 			id.value = rsp['data'];
 		}
 
-		displayCoins(rsp);
+		displayCoins(rsp['from']);
 		results.value = makeResString(rsp['text']);
 		results.style.color = 'green';
 		results.style.font = '1em bold';
