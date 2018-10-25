@@ -1,18 +1,27 @@
 Version 1.7:
 	Refer: JIRA cards CP-5 and CP-8.
 	
-	
+	#######################################################################
+	Oct, 25, 2018:
+	HTML page:
+		18. Load coin balances from tinycoin server.
+	Tinycoin Server:
+		19. New class Miner added for storing address and coins spent, earned and balance.
+		20. API return values modified to accommodate miner details also.
+		21. Current miner will be treated as the owner of the tincycoin server on current host.
+		
+	#######################################################################
 	Oct, 18, 2018:
-	HTML page
+	HTML page:
 		14. Boot strap 4 implementation as suggested by Prakash
 		15. Added coins division
 		16. Handling of coin balance in HTML, for now
-	Tinycoin:
-		16. All API return JSON object in a fixed format
+	Tinycoin Server:
+		17. All API return JSON object in a fixed format
 	
 	#######################################################################
 	Oct, 12, 2018:
-	HTML page
+	HTML page:
 		 9. Bug fix - trim operation on server address
 		10. Prefix http:// if absent from server address
 			Suffix / if absent from server address

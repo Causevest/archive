@@ -2,7 +2,6 @@
 /* Globals */
 var currtxnid="";
 var serveraddress=" ";
-var balance=10;
 
 /* Version Handling */
 function getVersion(evt) {
