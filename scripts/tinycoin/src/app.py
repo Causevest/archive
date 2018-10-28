@@ -23,6 +23,7 @@ from pathlib import Path
 node = Flask(__name__)
 CORS(node)
 run_with_ngrok(node)
+my_peer = ''
 
 # Create a blockchain and initialize it with a genesis block
 blockchain = [create_genesis_block()]
@@ -412,7 +413,9 @@ def version():
 
 @node.route('/auto_peer')
 def auto_peer():
-    pass
+    peer_server = 'tcs.serveo.net'
+    resp = requests.get('http://' + peer_server + '/peers/' + my_peer)
+    peer_nodes.update(json.loads(resp.text))
 
 
 if __name__ == "__main__":
