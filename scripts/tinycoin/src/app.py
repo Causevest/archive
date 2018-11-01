@@ -18,14 +18,13 @@ from miner import Miner
 
 from genesis import create_genesis_block
 from block import Block, Data, get_block_obj
-from flask_ngrok import run_with_ngrok
 
 from pathlib import Path
 
 node = Flask(__name__)
 CORS(node)
 # run_with_ngrok(node)
-my_peer = ''.join(random.choices('0123456789abcdef', k=8))
+my_peer = ''.join(random.choice('0123456789abcdef') for _ in range(8))
 
 # Create a blockchain and initialize it with a genesis block
 blockchain = [create_genesis_block()]
@@ -182,7 +181,7 @@ def connect_to_peers_of_peers():
             peers_of_peer = json.loads(response)
             peers.extend(peers_of_peer)
         except Exception as e:
-            print(f"__ERROR__ while trying to find peers of a peer. { str(e) }")
+            print("__ERROR__ while trying to find peers of a peer. %s" % str(e))
     # remove the self node
     this_node = os.getenv("HOST", default_ip) + ":" + os.getenv("PORT", default_port)
     while this_node in peers:
@@ -205,7 +204,7 @@ def connect_to_peers_of_peers():
 @node.route("/transaction", methods=['POST'])
 def transaction():
     transaction_received = request.get_json()
-    print(f"transaction_received: { transaction_received }")
+    print("transaction_received: %s" % transaction_received)
     transaction = Transaction(
         transaction_received['from'], 
         transaction_received['to'], 
@@ -217,11 +216,11 @@ def transaction():
     
     # print transaction logs
     print("New Transaction")
-    print(f"From: { transaction_received['from'] }")
-    print(f"To: { transaction_received['to'] }")
-    print(f"Amount: { transaction_received['amount'] }")
-    print(f"timestamp: { transaction_received['timestamp'] }")
-    print(f"TxnId: { transaction_received['txnid'] }\n")
+    print("From: %s" % transaction_received['from'])
+    print("To: %s" % transaction_received['to'])
+    print("Amount: %s" % transaction_received['amount'])
+    print("timestamp: %s" % transaction_received['timestamp'])
+    print("TxnId: %s\n" % transaction_received['txnid'])
     
     global success;
     global failed;
@@ -270,7 +269,7 @@ def find_new_chains():
             try:
                 chain = json.loads(requests.get(node_url + "/blocks").content)
             except Exception as e:
-                print(f"__ERROR__ while trying to find new seeds. { e.__str__() }")
+                print("__ERROR__ while trying to find new seeds. %s" % e.__str__())
         other_chains.append(chain)
     return other_chains
 

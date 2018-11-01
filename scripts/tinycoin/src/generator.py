@@ -8,7 +8,7 @@ class BlockGenerator(object):
     def __init__(self, last_block):
         self.index = last_block.index + 1
         self.timestamp = date.datetime.now()
-        self.data = f"I am block { self.index }"
+        self.data = "I am block %d" % self.index
         self.last_block_hash = last_block.hash
     
     def next(self):

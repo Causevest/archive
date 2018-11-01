@@ -8,7 +8,8 @@ import utils
 def create_genesis_block():
     # Manually crate a block with index zero
     # and arbitary previous hash
-    print(f"Creating and initializing blockchain at { utils.get_string_datetime(date.datetime.now()) }\n")
+    print("Creating and initializing blockchain at %s \n" %
+          str(utils.get_string_datetime(date.datetime.now())))
     transactions = []
     # 9 is the random sudo proof of work
     data = Data(9, transactions).create()
