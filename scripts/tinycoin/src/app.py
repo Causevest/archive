@@ -9,7 +9,9 @@ from flask import request
 from flask import jsonify
 from flask_cors import CORS
 import requests
+import threading
 
+import random
 from utils import *
 from transaction import Transaction
 from miner import Miner
@@ -22,8 +24,8 @@ from pathlib import Path
 
 node = Flask(__name__)
 CORS(node)
-run_with_ngrok(node)
-my_peer = ''
+# run_with_ngrok(node)
+my_peer = ''.join(random.choices('0123456789abcdef', k=8))
 
 # Create a blockchain and initialize it with a genesis block
 blockchain = [create_genesis_block()]
@@ -413,9 +415,17 @@ def version():
 
 @node.route('/auto_peer')
 def auto_peer():
-    peer_server = 'tcs.serveo.net'
-    resp = requests.get('http://' + peer_server + '/peers/' + my_peer)
+    peer_server = 'tiny_coin_seed.serveo.net'
+    resp = requests.get('http://' + peer_server + '/peers/' + my_peer + '.serveo.net')
     peer_nodes.update(json.loads(resp.text))
+    return json.dumps(list(peer_nodes))
+
+
+def worker():
+    port = int(os.getenv("PORT", default_port))
+    os.system('ssh -R %s:80:localhost:%d serveo.net' % (my_peer, port))
+    print('Connection Destroyed, Please restart app!')
+    exit(-1)
 
 
 if __name__ == "__main__":
@@ -435,5 +445,7 @@ if __name__ == "__main__":
     print("\t Host:", host)
     print("\t Port:", port)
     print("\tMiner:", owner.address)
-    
+    print('\t Peer:', my_peer)
+    threading.Thread(target=worker, daemon=True).start()
+
     node.run(host = str(host), port = int(port))
