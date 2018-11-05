@@ -34,9 +34,16 @@ mining = True
 mock = False
 
 
-@node.route("/generate_address", methods=['GET'])
+@node.route("/generate_keys", methods=['GET'])
+def generate_keys():
+    print (address.generate_keys())
+    return json.dumps(address.generate_keys())
+
+
+@node.route("/generate_address", methods=['POST'])
 def generate_address():
-    return address.generate_address()
+    public_key = request.get_json()["public_key"]
+    return address.generate_address(public_key)
 
 
 @node.route("/get_miner_address", methods=['GET'])
