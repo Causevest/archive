@@ -65,14 +65,19 @@ def base58(address_hex):
     return b58_string
 
 
-def generate_address():
+def generate_keys():
+    btc = BitcoinWallet()
     kg = blocksmith.KeyGenerator()
     kg.seed_input(str(uuid.uuid4()))
-    key = kg.generate_key()
-    print("Private key: ", key)
+    private_key = kg.generate_key()
 
-    btc = BitcoinWallet()
+    public_key = btc._BitcoinWallet__private_to_public(private_key)
+    return {
+        "private_key": private_key,
+        "public_key": public_key.decode('utf-8')
+    }
 
-    public_key = btc._BitcoinWallet__private_to_public(key)
+
+def generate_address(public_key):
     address = public_to_address(public_key)
     return address
