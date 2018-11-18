@@ -8,7 +8,6 @@ from flask import Flask
 from flask import request
 from flask import jsonify
 from flask_cors import CORS
-import requests
 
 from utils import *
 from transaction import Transaction
@@ -31,9 +30,9 @@ previous_block = blockchain[0]
 default_ip = "0.0.0.0" # Works in all cases whether from docker or command window etc.
 default_port = "5000"
 default_miner = "default_miner_address"
-# A completely random address of the owner of this node
-owner = Miner(default_miner)
 
+# A completely random address of the owner of this node
+owner = ''
 
 # Transactions that this node is doing
 nodes_transactions = []
@@ -41,6 +40,7 @@ nwtxnid = int(1)
 
 # Link of peer nodes
 peer_nodes = set()
+peer_addr = dict()
 # If we are mining or not
 mining = True 
 miningfees = int(1)
@@ -72,18 +72,17 @@ def get_miner_address():
     };
     return jsonify(result)
 
-
 @node.route("/update_miner_address", methods=['POST'])
 def update_miner_address():
     """
-        Update miner address
+        Update miner address with new miner address
     """
-    address = request.get_json()['miner_address'];
-    result = {};
-    
     global success;
     global failed;
     global owner;
+
+    address = owner.genAddr(owner.ipaddr);
+    result = {};
     
     if not address:
         result[resultStatus] = failed
@@ -91,11 +90,30 @@ def update_miner_address():
         result[resultText] = "Can not update miner_address as valid miner address is not found"
     else:
         owner.address = address
+        owner.alladdr = address
         result[resultData] = owner.address
         result[resultStatus] = success
         result[resultText] = "Successfully updated miner address"
         
     result[resultFrom] = owner.to_json();
+    return jsonify(result)
+
+@node.route("/all_miner_address", methods=['GET'])
+def all_miner_address():
+    """
+        Update miner address
+    """
+    result = {};
+    
+    global success;
+    global failed;
+    global owner;
+    
+    result[resultData] = owner.address
+    result[resultStatus] = success
+    result[resultText] = "Successfully fetched all miner addresses:\n" + str(owner.alladdr)
+    result[resultFrom] = owner.to_json();
+
     return jsonify(result)
 
 @node.route("/peers", methods=['GET'])
@@ -113,6 +131,11 @@ def peer():
     }
     return jsonify(result)
 
+def getPeerAddr(peers):
+    for peer in peers:
+    	response = requests.get(peer+"/get_miner_address")
+    	if response.status_code == 200:
+    		peer_addr[str(response.json()[resultData])] = peer
 
 @node.route("/add_peers", methods=['POST'])
 def add_peers():
@@ -132,11 +155,13 @@ def add_peers():
         # clear the peer list
         peer_nodes.clear()
         peer_nodes.update(peers)
+        getPeerAddr(peer_nodes)
         result[resultStatus] =success
         result[resultText] = "Peer list updated. Peer/peers replaced with new peer/peers."
     else:
         result[resultStatus] = failed
         result[resultText] = "Failed while adding peer/peers. Error[empty peer list received]"
+    result[resultData] = json.dumps(list(peer_nodes))
     return jsonify(result)
 
 
@@ -156,14 +181,26 @@ def append_peers():
     peers = json.loads(request.data)
     if peers:
         peer_nodes.update(peers)
+        getPeerAddr(peer_nodes)
         result[resultStatus] = success
         result[resultText] = "Peer list updated. Peer/peers is/are appended."
     else:
         result[resultStatus] = failed
         result[resultText] = "Failed while appending peer/peers. Error[empty peer list received]"
-
+    result[resultData] = json.dumps(list(peer_nodes))
     return jsonify(result)
 
+@node.route("/peer_addresses", methods=['GET'])
+def peer_addresses():
+	global success
+	global owner
+	result = {
+		resultStatus: success,
+		resultText: "Successfully Peer address vs ipaddress list fetched.",
+		resultData: peer_addr,
+		resultFrom: owner.to_json()
+	}
+	return jsonify(result)
 
 @node.route("/connect_to_peers_of_peers", methods=['GET'])
 def connect_to_peers_of_peers():
@@ -174,7 +211,7 @@ def connect_to_peers_of_peers():
     for peer in peer_nodes:
         try:
             response = requests.get(peer + "/peers").content
-            peers_of_peer = json.loads(response)
+            peers_of_peer = json.loads(response.json()[resultData])
             peers.extend(peers_of_peer)
         except Exception as e:
             print(f"__ERROR__ while trying to find peers of a peer. { str(e) }")
@@ -195,7 +232,24 @@ def connect_to_peers_of_peers():
     }
 
     return jsonify(result)
+"""
+    v 1.7
+    Attempting to send amount to transaction's 'to' address.
+    The amount is deducted irrespective of success or failure of this operation
+"""
+def sendamt(to,amount):
+    global owner
+    sendto = {}
+    sendto["address"] = to.strip()
+    sendto["ipaddr"] = peer_addr[to.strip()]
+    sendto["earned"] = int(amount)
+    hjson= {}
+    hjson['Accept'] = "application/json; charset=utf-8"
+    hjson['Content-Type'] = "application/json; charset=utf-8"
+    hjson['Access-Control-Allow-Origin'] = '*'
 
+    response = requests.post(sendto["ipaddr"]+"/earn", json=sendto, headers=hjson)
+    #print(jsonify(response))
 
 @node.route("/transaction", methods=['POST'])
 def transaction():
@@ -227,17 +281,57 @@ def transaction():
         resultData: ''
     }
     if transaction.is_valid():
+        """
+            WARNING: Not caring here whether the receipent actually received the amount.
+                    ie spent coins are lost ;)
+        """
         nodes_transactions.append(transaction.to_json())
         result[resultStatus] = success
         result[resultText] = "Transaction submission successful."
         owner.spent += amt;
         owner.balance -= amt;
+        sendamt(transaction_received['to'], transaction_received['amount'])
     else:
         result[resultStatus] = failed
         result[resultText] = "Invalid transaction"
     result[resultFrom] = owner.to_json()
     
     return jsonify(result)
+
+"""
+    v 1.7 changes
+    Invoked by another tinycoin server,
+    whose 'to' field contains 
+    this tinycoin server's address
+    TODO: Notify connected client
+"""
+@node.route("/earn", methods=['POST'])
+def earn():
+    print(f"Request received: {request}")
+    print(f"Request received: {request.headers}")
+
+    received = request.get_json()
+    print(f"Earnings received: {received}")
+
+    global owner, success, failed;
+    result = {
+        resultData: received,
+        resultFrom: owner.to_json()
+    }
+    if(owner.address != received["address"].strip()):
+        result[resultStatus] = failed
+        result[resultText] = "Tinycoin server address mismatch"
+        return jsonify(result)
+
+    earned = int(received["earned"])
+    owner.earned += earned
+    owner.balance += earned
+    result[resultStatus] = success
+    result[resultText] = "Received earnings."
+    result[resultFrom] = owner.to_json()
+
+    return jsonify(result)
+
 
 @node.route("/blocks", methods=['GET'])
 def get_blocks():
@@ -409,7 +503,7 @@ def version():
 
 if __name__ == "__main__":
     print("Tinycoin server started ...!\n")
-    owner.address = os.getenv("MINER_ADDRESS", default_miner)
+    owner = Miner(os.getenv("MINER_ADDRESS", default_miner))
     if not owner.address:
         print("Can not start application as valid miner address is not found")
         # exit the system with error

@@ -37,6 +37,17 @@ function updateMiner(evt) {
 	perform("update_miner_address", JSON.stringify(data))
 }
 
+function getAllMinerAddr(evt) {
+	console.debug("Get All Miner Addresses");
+
+	var id = document.getElementById("miner");
+	console.debug("Displayed Miner Address: "+id.value);
+
+	eraseResults();
+	perform("all_miner_address", '')
+}
+
+
 /* Peers Handling */
 function getPeers(evt) {
 	console.debug("Get peers");
@@ -66,6 +77,13 @@ function appPeers(evt) {
 	var data = peerList(peerlst);
 	eraseResults();	
 	perform("append_peers", data)
+}
+
+function peerAddresses(evt) {
+	console.debug("Peer addresses");
+
+	eraseResults();
+	perform("peer_addresses", "")
 }
 
 function detectPeers(evt) {

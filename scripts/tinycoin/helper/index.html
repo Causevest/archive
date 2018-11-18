@@ -36,6 +36,7 @@
 			<input id="miner" type="text" class="col-xl-6" value=""/>
 			<button id="get-miner" type="button" class="btn col-xl-1 mx-2" onclick="getMiner(event)">Get</button>
 			<button id="update-miner" type="button" class="btn col-xl-1 mx-2" onclick="updateMiner(event)">Update</button>
+			<button id="update-miner" type="button" class="btn col-xl-1 mx-2" onclick="getAllMinerAddr(event)">GetAll</button>
 		</div>
 	</div>
 
@@ -67,7 +68,7 @@
 						<button id="getpeers" type="button" class="btn col-xl-1 mx-1 my-1" onclick="getPeers(event)">Get</button>
 						<button id="addpeers" type="button" class="btn col-xl-1 mx-1 my-1" onclick="addPeers(event)">Add</button>
 						<button id="apppeers" type="button" class="btn col-xl-2 mx-1 my-1" onclick="appPeers(event)">Append</button>
-						<button id="detectpeers" type="button" class="btn col-xl-2 ml-1 my-1" onclick="detectPeers(event)">Detect</button>
+						<button id="detectpeers" type="button" class="btn col-xl-2 ml-1 my-1" onclick="peerAddresses(event)">PeerAddr</button>
 					</div>				
 				</div>
 				<div id="transaction-division" class="tab-pane container h-100 my-1 mx-1" role="tabpanel">

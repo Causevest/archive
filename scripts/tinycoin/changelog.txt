@@ -1,3 +1,12 @@
+Version 1.8:
+	Refer: JIRA cards CP-5, CP-6, CP-8 and CP-19
+	
+	#######################################################################
+	Nov, 18, 2018:
+	Tinycoin server:
+		22. Address generation using random strings. Currently kept address length at 32.
+		23. Transaction amount is credited to 'to' address and deducted from 'from' address.
+		
 Version 1.7:
 	Refer: JIRA cards CP-5 and CP-8.
 	

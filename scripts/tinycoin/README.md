@@ -72,7 +72,7 @@ You can set the values of following environment variables according to your need
 
 # How to build your own tinycoin docker image(Optional)
 
-If you are intrested in building your own docker image please read this section otherwise you can skip this.
+If you are interested in building your own docker image please read this section otherwise you can skip this.
 
  - clone project: `git clone https://github.com/prakashpandey/tinycoin`
 
@@ -97,13 +97,22 @@ To solve this problem, `testing.sh` script will help you run multiple blockchain
 
 # API'S
 
+###API response: All the API responses are a JSON with following structure:
+{
+	"result": "success" or "failed", - whether the API is success or failed
+	"text": ..., - This field is the description for the result of the API call
+	"data": ..., - Actual return value of the API call, further processing may be needed
+	"from": ..., - Address of the responder, generally the owner of the tinycoin server
+}
+
+
 #### 1. Get miner address
 
 - `Method = Get`
 
 - `Url = localhost:5000/get_miner_address`
 
-- API response `Returns miner address`
+- API response `miner address`
 
 #### 2. Update miner address
 
@@ -117,6 +126,7 @@ To solve this problem, `testing.sh` script will help you run multiple blockchain
     ```
 - Headers: `Content-Type=application/json`
 - API response `Successfully updated miner address` or `Can not update miner_address as valid miner address is not found`
+               updated miner address is successful
 
 #### 3. Append peers
 
@@ -133,7 +143,7 @@ To solve this problem, `testing.sh` script will help you run multiple blockchain
     ```
 - Headers: `Content-Type=application/json`
 - API response `Peer list updated` or `Failed while adding peer/peers. Error[empty peer list received]`
-
+				Peer list is returned
 #### 4. Add peers
 
  Override the existing peers list with new `given peers` list.
@@ -149,6 +159,7 @@ To solve this problem, `testing.sh` script will help you run multiple blockchain
     ```
 - Headers: `Content-Type=application/json`
 - API response `Peer list updated` or `Failed while adding peer/peers. Error[empty peer list received]`
+               Peer list is returned
 
 
 #### 5. Create a transaction
@@ -169,8 +180,12 @@ To solve this problem, `testing.sh` script will help you run multiple blockchain
 			"signature": coming soon
         }
     ```
+The amount is added to the `to' address tinycoin through another API.
+The same is deducted from 'from' address in our case owner. 
+
 - Headers: `Content-Type=application/json`
 - API response `Transaction submission successful` or `Transaction unsuccessful`
+				
 
 ##### 6. Start mining
 
@@ -202,7 +217,7 @@ To solve this problem, `testing.sh` script will help you run multiple blockchain
 
 - `Url = localhost:5000/peers`
 
-- API response `["http://127.0.0.1:5001", "http://127.0.0.1:5002"]`
+- API response list of peers
 
 #### 10. Connect to all peers of peers
 
@@ -210,16 +225,26 @@ To solve this problem, `testing.sh` script will help you run multiple blockchain
 
 - `Url = localhost:5000/connect_to_peers_of_peers`
 
-- API response `["http://127.0.0.1:5002", "http://127.0.0.1:5000"]`
+- API response peers list after making peers of peers as current server peers (!)
 
 #### Version 1.7 New API added
-#### 11. Connect to all peers of peers
+#### 11. Version of API
 
 - `Method = Get`
 
 - `Url = localhost:5000/version`
 
 - API response `<ver>` or 'default' if VERSION file not found
+
+#### Version 1.7 new API added
+#### 12. Update earnings
+
+- Method = 'Post'
+
+- `Url = <transaction to field>/earn'
+
+- API response JSON object depicting success/fail
+
 
 # What more can be done?
 
@@ -240,4 +265,3 @@ Currently the consensus and proof of work algorithms are very simple. There is s
 
 # Resource
 This learning project is created just for learning and based on open blog articles on internet.
-

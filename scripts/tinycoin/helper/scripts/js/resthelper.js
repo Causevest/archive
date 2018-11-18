@@ -20,13 +20,20 @@ TinycoinAPI =
 {
 	//API, [API Name, REST method, content-type, html id, next-operation]
 	"version": ["version", "get", "text", "version", ""],
+
 	"get_miner_address": ["get_miner_address", "get", "text", "miner", ""],
 	"update_miner_address": ["update_miner_address", "post", "json", "miner", "get_miner_address"],
+	"all_miner_address": ["all_miner_address", "get", "json", "miner", "get_miner_address"],
+	
 	"add_peers": ["add_peers", "post", "json", "peers", "connect_to_peers_of_peers"],
 	"append_peers": ["append_peers", "post", "json", "peers", "connect_to_peers_of_peers"],
-	"connect_to_peers_of_peers": ["connect_to_peers_of_peers", "get", "text", "peers", ""],
-	"transaction": ["transaction", "post", "json", "", ""],
+	"peer_addresses": ["peer_addresses", "get", "json", "results", ""],
+	
 	"peers": ["peers", "get", "text", "peers", ""],
+	"connect_to_peers_of_peers": ["connect_to_peers_of_peers", "get", "text", "peers", ""],
+	
+	"transaction": ["transaction", "post", "json", "", ""],
+	
 	"mine": ["mine", "get", "text", "results", ""],
 	"blocks": ["blocks", "get", "text", "results", ""],
 	"consensus": ["consensus", "get", "text", "", ""],
@@ -104,7 +111,12 @@ function processRq(rq,id,nxtopn) {
 	.then(function(rsp) {
 		console.debug(rsp);
 		if(id != null) {
-			id.value = rsp['data'];
+			if(typeof(rsp['data']) == 'object'){
+				id.value = Object.entries(rsp['data'])
+			}
+			else {
+				id.value = rsp['data'];
+			}
 		}
 
 		displayCoins(rsp['from']);
