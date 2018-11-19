@@ -299,6 +299,24 @@ def transaction():
     return jsonify(result)
 
 """
+    v 1.8 changes
+    Current coin position
+"""
+
+@node.route("/coins", methods=['GET'])
+def coins():
+    global success;
+    global owner;
+
+    result = {
+        resultStatus: success,
+        resultText: "Returned coins",
+        resultData: owner.to_json(),
+        resultFrom: owner.to_json()
+    }
+    return json.dumps(result)
+
+"""
     v 1.7 changes
     Invoked by another tinycoin server,
     whose 'to' field contains 
@@ -307,11 +325,7 @@ def transaction():
 """
 @node.route("/earn", methods=['POST'])
 def earn():
-    print(f"Request received: {request}")
-    print(f"Request received: {request.headers}")
-
     received = request.get_json()
-    print(f"Earnings received: {received}")
 
     global owner, success, failed;
     result = {

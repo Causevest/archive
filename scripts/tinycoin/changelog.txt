@@ -1,6 +1,16 @@
+Refer: JIRA cards CP-5, CP-6, CP-8 and CP-19
+
 Version 1.8:
-	Refer: JIRA cards CP-5, CP-6, CP-8 and CP-19
 	
+	#######################################################################
+	Nov, 19, 2018:
+	HTML Page:
+		24. Refresh button in coins section
+	Tinycoin server:
+		25. Coins refresh functionality.
+	Documents:
+		26. Corrections in tinycoin/README.md and additional description in tinycoin/helper/ReadMe.md
+
 	#######################################################################
 	Nov, 18, 2018:
 	Tinycoin server:
@@ -8,7 +18,6 @@ Version 1.8:
 		23. Transaction amount is credited to 'to' address and deducted from 'from' address.
 		
 Version 1.7:
-	Refer: JIRA cards CP-5 and CP-8.
 	
 	#######################################################################
 	Oct, 25, 2018:
@@ -42,8 +51,8 @@ Version 1.7:
 	Oct, 10, 2018:
 		7. Bug fix in mine API. Timestamp, txnid and signature parameters are missing when constructing the chain.
 		8. index.html - version, peers and results text boxes made read-only.
+
 	#######################################################################
-	
 	Oct, 9, 2018:
 		1. Web GUI for invoking API calls 
 			Populate updated values into appropriate places eg. update miner displays the new value in miner box

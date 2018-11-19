@@ -124,6 +124,15 @@ function transaction(evt) {
 	perform("transaction", JSON.stringify(data))
 }
 
+/* Coin related */
+function coins(evt) {
+	console.debug("Perform coin refresh");
+
+	eraseCoins();
+	perform("coins", '')
+}
+
+
 /* Other operations */
 function mine(evt) {
 	console.debug("Perform mine");

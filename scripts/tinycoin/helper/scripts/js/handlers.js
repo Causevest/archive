@@ -32,6 +32,13 @@ function clearTxn(evt) {
 	amt.value = '';
 }
 
+/* Coins */
+function eraseCoins() {
+	console.debug("Clear contents of coin fields");
+	document.getElementById("earned").value = "";
+	document.getElementById("spent").value = "";
+	document.getElementById("balance").value = "";
+}
 
 /* Results */
 function clearResults(evt) {

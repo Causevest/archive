@@ -74,15 +74,15 @@
 				<div id="transaction-division" class="tab-pane container h-100 my-1 mx-1" role="tabpanel">
 					<div class="row mt-2 mb-1">
 						<label for="from" class="col-xl-2 text-left">From address:</label>
-						<input id="from" type="text" class="col-xl-4" value=""/>
+						<input id="from" type="text" class="col-xl-5" value=""/>
 					</div>
 					<div class="row my-1">
 						<label for="to" class="col-xl-2 text-left">To address:</label>
-						<input id="to" type="text" class="col-xl-4" value=""/>
+						<input id="to" type="text" class="col-xl-5" value=""/>
 					</div>
 					<div class="row my-1">
 						<label for="amount" class="col-xl-2 text-left">Amount:</label>
-						<input id="amount" type="text" class="col-xl-4" value=""/>
+						<input id="amount" type="text" class="col-xl-5" value=""/>
 					</div>
 					<div class="row mt-1 mb-2">
 						<button id="txn" type="button" class="btn col-x1-2 ml-1 my-1 mr-2" onclick="transaction(event)">Perform Transaction</button>
@@ -119,6 +119,9 @@
 			<div class="row h-25 mt-1 mx-1 mb-3">
 				<label for="balance" class="col-xl-6 text-right">Balance:</label>
 				<input id="balance" type="text" class="col-xl-4" value="10" readonly="" />
+			</div>
+			<div class="row h-25 mt-1 mx-1 mb-3">
+				<button id="refresh" type="button" class="btn mx-2 my-2" onclick="coins(event)">Refresh</button>
 			</div>
 		</div>
 	</div>

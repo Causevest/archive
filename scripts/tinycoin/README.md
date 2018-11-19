@@ -241,10 +241,26 @@ The same is deducted from 'from' address in our case owner.
 
 - Method = 'Post'
 
-- `Url = <transaction to field>/earn'
+- `Url = <tinycoin server pointed by transaction to field>/earn'
 
 - API response JSON object depicting success/fail
 
+#### Version 1.8 new API added
+#### 13. All addresses used by tinycoin server
+
+- Method = 'Get'
+
+- `Url = localhost:5000/peer_addresses'
+
+- API response JSON object depicting coins information for current owner
+
+#### 14. Refresh coins information
+
+- Method = 'Get'
+
+- `Url = <tinycoin server>/coins'
+
+- API response JSON object depicting coins information for current owner
 
 # What more can be done?
 
